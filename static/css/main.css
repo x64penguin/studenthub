@@ -7,7 +7,9 @@ body {
     width: calc(100%-2rem);
     height: 4rem;
     padding: 1rem;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.08)
+    border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+    display: grid;
+    grid-template-columns: 1fr 30% 1fr;
 }
 
 .title {
@@ -25,4 +27,32 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
+}
+
+.navbar {
+    height: 100%;
+    display: grid;
+    text-align: center;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.navbar span {
+    font-family: 'Segoe UI';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+
+    line-height: 4rem;
+
+    color: rgba(46, 46, 46, 0.5);
+    transition: color 0.25s;
+    cursor: pointer;
+}
+
+.navbar span:hover {
+    color: rgba(46, 46, 46, 0.7);
+}
+
+.navbar__Active {
+    color: #2E2E2E!important;
 }
