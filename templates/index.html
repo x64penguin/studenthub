@@ -1,3 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="main-card">
+
+</div>
+<div class="decorate-circle" style="transform: rotate(90deg)"></div>
+<div class="decorate-circle"></div>
 {% endblock content %}
+
+{% block script %}
+<script>
+    $(function() {
+        function decorative_circles_update() {
+            let decorative_circles = $(".decorate-circle");
+            let main_card = $(".main-card");
+            let main_card_pos = [main_card[0].offsetLeft, main_card[0].offsetTop];
+            let main_card_size = [main_card[0].clientWidth, main_card[0].clientHeight];
+            let circle_size = decorative_circles[0].clientWidth;
+
+            decorative_circles[0].style.left = main_card_pos[0] - circle_size * 0.25;
+            decorative_circles[0].style.top = main_card_pos[1] + circle_size * 0.1;
+        }
+
+        decorative_circles_update();
+    });
+</script>
+{% endblock script %}
