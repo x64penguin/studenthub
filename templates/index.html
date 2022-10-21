@@ -19,6 +19,7 @@
       </div>
       <div class="header__profile">
         {% if user.is_authenticated %}
+        <img src="{{ user.avatar or '../static/images/default-avatar.svg'}}" alt="avatar" class="profile__avatar">
         {% else %}
         <a href="{{ url_for('login_page') }}">Войти</a>
         <a href="{{ url_for('register') }}">Регистрация</a>

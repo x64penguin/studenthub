@@ -21,15 +21,16 @@ def login_page():
         password = request.form.get("password")
         user = User.query.filter_by(username=username).first()
         if user is None or not user.check_password(password):
-            flash("Неверное имя пользователья или пароль")
+            flash("Неверное имя пользователя или пароль")
             return redirect(url_for("login_page"))
-        login_user(user, remember=True)
+        login_user(user, remember=bool(request.form.get("remember-me")))
 
-        def_redirect = url_for("index")
+        redirect_url = url_for("index")
         if request.args.get("redirect") is not None:
-            def_redirect = request.args.get("redirect")
-        return redirect(def_redirect)
-    return render_template("login.html", user=current_user, url_for=url_for)
+            redirect_url = request.args.get("redirect")
+
+        return redirect(redirect_url)
+    return render_template("login.html", user=current_user)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -41,13 +42,22 @@ def register():
         password_confirm = request.form.get("password_confirm")
         account_type = request.form.get("account-type")
 
+        if User.query.filter_by(username=username).first() is not None:
+            flash("Имя пользователя уже занято")
+            return render_template("register.html", user=current_user)
+
+        if User.query.filter_by(email=email).first() is not None:
+            flash("Пользователь с такой почтой уже существует")
+            return render_template("register.html", user=current_user)
+
         user = User(username=username, email=email, account_type=account_type)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
 
-        def_redirect = url_for("index")
+        redirect_url = url_for("index")
         if request.args.get("redirect") is not None:
-            def_redirect = request.args.get("redirect")
-        return redirect(def_redirect)
-    return render_template("register.html", user=current_user, url_for=url_for)
+            redirect_url = request.args.get("redirect")
+
+        return redirect(redirect_url)
+    return render_template("register.html", user=current_user)
