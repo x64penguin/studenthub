@@ -1,0 +1,63 @@
+.log-reg-box {
+    width: 35%;
+    margin: 3rem auto;
+    padding: 1.25rem;
+    box-sizing: border-box;
+}
+
+.log-reg-box input[type="text"], .log-reg-box input[type="password"] {
+    width: 100%;
+    margin: 0.6rem 0;
+}
+
+.log-reg-box a {
+    color: var(--text-grey);
+    margin-left: auto;
+    text-align: right;
+    display: block;
+}
+
+.log-reg-box h1 {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+.log-reg-box button {
+    width: 100%;
+    height: 2.6rem;
+    cursor: pointer;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    border: none;
+    margin-top: 1rem;
+    transition: background-color 0.5s, box-shadow 0.5s;
+    background-color: var(--blue-main);
+    color: white;
+}
+
+.log-reg-box button:hover {
+    box-shadow: 0 0 40px rgba(60, 60, 255, 0.2);
+}
+
+@media (max-width: 900px) {
+    .log-reg-box {
+        width: 50%;
+    }
+}
+
+@media (max-width: 769px) {
+    .log-reg-box {
+        width: 80%;
+        border: none;
+        border-radius: 0;
+        margin-top: 0;
+    }
+}
+
+@media (max-width: 500px) {
+    .log-reg-box {
+        width: 80%;
+    }
+}

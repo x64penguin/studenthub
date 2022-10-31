@@ -1,69 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name ="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-  <link href='https://fonts.googleapis.com/css?family=Fredoka One' rel='stylesheet'>
-  <link rel="stylesheet" href="../static/css/main.css">
-  <title>StudentHub</title>
-</head>
-<body>
-  <div class="layout">
-    <header>
-      <a class="header__title" href="{{ url_for('index') }}">studenthub</a>
-      <a class="header__catalog">Каталог</a>
-      <div class="header__links">
-        <a href="http://">О проекте</a>
-        <span>Учителям</span>
-        <span>Ученикам</span>
-      </div>
-      <div class="header__profile">
-        <a href="{{ url_for('login_page') }}">Войти</a>
-        <a href="{{ url_for('register') }}">Регистрация</a>
-      </div>
-      <div class="header__menu">
-        <span>меню</span>
-        <button type="button" class="menu-button"><img src="../static/images/icons/menu.svg"></button>
-        <div class="menu-dropdown">
-          <a class="menu-dropdown__item">Каталог</a>
-          <a class="menu-dropdown__item">О проекте</a>
-          <a class="menu-dropdown__item">Учителям</a>
-          <a class="menu-dropdown__item">Ученикам</a>
-          {% if user.is_authenticated %}
-          <a class="menu-dropdown__item">Профиль</a>
-          {% else %}
-          <a class="menu-dropdown__item" href="{{ url_for('login_page') }}">Войти</a>
-          <a class="menu-dropdown__item" href="{{ url_for('register') }}">Регистрация</a>
-          {% endif %}
-        </div>
-      </div>
-    </header>
+{% extends "base.html" %}
 
-    <main>
-      <div class="log-reg-box">
-        <form method="post" novalidate>
-          <h1 class="login__title">Авторизация</h1>
-          <input type="text" class="" id="username" name="username" placeholder="Имя пользователя">
-          <input type="password" class="" id="password" name="password" placeholder="Пароль">
-          <div class="check-group">
-            <input type="checkbox" class="" id="remember-me" name="remember-me">
-            <label for="remember-me">Запомнить меня</label>
-          </div>
-          <a>Забыл пароль</a>
-          {% with messages = get_flashed_messages() %}
-          {% if messages %}
-          {% for message in messages %}
-          <span style="color: red; display: block; text-align: center;">{{ message }}</span>
-          {% endfor %}
-          {% endif %}
-          {% endwith %}
-          <button class="btn-inactive" id="submit-btn">Войти</button>
-          <a style="text-align: center;" class="mt-1">Регистрация</a>
-        </form>
-    </main>
-  </div>
+{% block styles %}
+<link rel="stylesheet" href="../static/css/login.css">
+{% endblock styles %}
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js" integrity="sha512-CX7sDOp7UTAq+i1FYIlf9Uo27x4os+kGeoT7rgwvY+4dmjqV0IuE/Bl5hVsjnQPQiTOhAX1O2r2j5bjsFBvv/A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="../static/js/login.js"></script>
-</body>
-</html>
+{% block content %}
+<div class="log-reg-box block-default">
+    <form method="post" novalidate>
+        <h1 class="login__title">Авторизация</h1>
+        <input type="text" class="" id="username" name="username" placeholder="Имя пользователя">
+        <input type="password" class="" id="password" name="password" placeholder="Пароль">
+        {{ checkbox("Запомнить меня", "remember-me") }}
+        <a>Забыл пароль</a>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <span style="color: red; display: block; text-align: center;">{{ message }}</span>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <button class="disabled-btn" id="submit-btn">Войти</button>
+        <a style="text-align: center;" class="mt-1">Регистрация</a>
+    </form>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="../static/js/login.js"></script>
+{% endblock scripts %}

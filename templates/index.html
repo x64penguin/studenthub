@@ -1,69 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name ="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-  <link href='https://fonts.googleapis.com/css?family=Fredoka One' rel='stylesheet'>
-  <link rel="stylesheet" href="../static/css/main.css">
-  <title>StudentHub</title>
-</head>
-<body class="body-gradient">
-  <div class="layout">
-    <header>
-      <a class="header__title">studenthub</a>
-      <a class="header__catalog">Каталог</a>
-      <div class="header__links">
-        <a href="http://">О проекте</a>
-        <span>Учителям</span>
-        <span>Ученикам</span>
-      </div>
-      <div class="header__profile">
-        {% if user.is_authenticated %}
-        <img src="{{ user.avatar or '../static/images/default-avatar.svg'}}" alt="avatar" class="profile__avatar">
-        {% else %}
-        <a href="{{ url_for('login_page') }}">Войти</a>
-        <a href="{{ url_for('register') }}">Регистрация</a>
-        {% endif %}
-      </div>
-      <div class="header__menu">
-        <span>меню</span>
-        <button type="button" class="menu-button"><img src="../static/images/icons/menu.svg"></button>
-        <div class="menu-dropdown">
-          <a class="menu-dropdown__item">Каталог</a>
-          <a class="menu-dropdown__item">О проекте</a>
-          <a class="menu-dropdown__item">Учителям</a>
-          <a class="menu-dropdown__item">Ученикам</a>
-          {% if user.is_authenticated %}
-          <a class="menu-dropdown__item">Профиль</a>
-          {% else %}
-          <a class="menu-dropdown__item" href="{{ url_for('login_page') }}">Войти</a>
-          <a class="menu-dropdown__item" href="{{ url_for('register') }}">Регистрация</a>
-          {% endif %}
-        </div>
-      </div>
-    </header>
+{% extends "base.html" %}
 
-    <main>
-      <div class="main-banner">
-        <div class="main-banner__description">
-          <h1>Удобный и быстрый инструмент для создания тестов</h1>
-          <span class="text-main-l">Любые вопросы, ручная проверка, таймер и многое другое - в одном бесплатном инструменте. Создавать тесты еще никогда не было так просто! Регистрируйся и начинаый создавть тесты прямо сейчас.</span>
-        </div>
-        <img src="../static/images/main_page_preview.svg">
-      </div>
-      <div class="question-types">
-        <h2>Разные типы вопросов</h2>
-        <div class="question-cards">
-          <div class="question-card"></div>
-          <div class="question-card"></div>
-          <div class="question-card"></div>
-          <div class="question-card"></div>
-        </div>
-      </div>
-    </main>
-  </div>
+{% block styles %}
+<link rel="stylesheet" href="../static/css/index.css">
+{% endblock styles %}
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js" integrity="sha512-CX7sDOp7UTAq+i1FYIlf9Uo27x4os+kGeoT7rgwvY+4dmjqV0IuE/Bl5hVsjnQPQiTOhAX1O2r2j5bjsFBvv/A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="../static/js/index.js"></script>
-</body>
-</html>
+{% block content %}
+<div class="main-banner">
+    <div class="main-banner__description">
+        <h1>Удобный и быстрый инструмент для создания тестов</h1>
+        <span class="text-main-l">Любые вопросы, ручная проверка, таймер и многое другое - в одном бесплатном инструменте. Создавать тесты еще никогда не было так просто! Регистрируйся и начинаый создавть тесты прямо сейчас.</span>
+    </div>
+    <img src="../static/images/main-preview.svg">
+</div>
+<div class="question-types">
+    <h2>Разные типы вопросов</h2>
+    <div class="question-cards">
+        <div class="block-default question-card"></div>
+        <div class="block-default question-card"></div>
+        <div class="block-default question-card"></div>
+        <div class="block-default question-card"></div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="../static/js/index.js"></script>
+{% endblock scripts %}

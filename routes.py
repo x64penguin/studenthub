@@ -1,6 +1,7 @@
 from app import app, db
 import json
 import os
+import utils
 from os.path import join
 from flask import render_template, redirect, url_for, flash, request, send_file, escape, abort, \
     make_response
@@ -30,7 +31,7 @@ def login_page():
             redirect_url = request.args.get("redirect")
 
         return redirect(redirect_url)
-    return render_template("login.html", user=current_user)
+    return render_template("login.html", user=current_user, checkbox=utils.checkbox)
 
 
 @app.route("/register", methods=["GET", "POST"])
