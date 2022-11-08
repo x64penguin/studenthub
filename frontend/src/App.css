@@ -1,0 +1,35 @@
+html,
+body,
+#root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: "Segoe UI";
+    margin: 0;
+    padding: 0;
+    background: #EEEEEE;
+}
+
+a {
+    text-decoration: none;
+}
+
+h2 {
+    font-family: "Helvetica";
+    font-size: 2.3rem;
+    font-weight: bold;
+}
+
+.mt-1 {
+    margin-top: 1rem;
+}
+
+.block-default {
+    background: #FDFDFD;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-sizing: border-box;
+}

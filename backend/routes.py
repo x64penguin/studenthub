@@ -4,13 +4,12 @@ import os
 import utils
 from os.path import join
 from flask import render_template, redirect, url_for, flash, request, send_file, escape, abort, \
-    make_response
+    make_response, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
-from models import load_user, User
+from models import load_user, get_user, User
 
 
 @app.route("/")
-@app.route("/index")
 def index():
     return render_template("index.html", user=current_user, url_for=url_for)
 
@@ -62,3 +61,56 @@ def register():
 
         return redirect(redirect_url)
     return render_template("register.html", user=current_user)
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(request.referrer)
+
+
+@app.route("/user/<int:uid>")
+def user_page(uid):
+    user = get_user(uid)
+
+    if user is None:
+        #TODO: create error page
+        ...
+    
+    return render_template("user.html", user=user)
+
+
+@app.route("/utils/validator")
+def validator():
+    val = request.args
+    if val['type'] == "username":
+        return str(User.query.filter_by(username=val['value']).first() is None)
+    elif val['type'] == "email":
+        return str(User.query.filter_by(email=val['value']).first() is None)
+    else:
+        return abort(404)
+
+
+@app.route("/api/user")
+def api_get_user():
+    if current_user.is_authenticated:
+        return {
+            "auth": True,
+            "user": {
+                "username": current_user.username,
+                "email": current_user.email,
+                "account-type": current_user.account_type,
+                "avatar": current_user.avatar,
+            }
+        }, 200
+    else:
+        return {
+            "auth": False,
+            "user": {}
+        }, 200
+
+
+@app.after_request
+def add_header(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response

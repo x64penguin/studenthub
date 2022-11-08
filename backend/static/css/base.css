@@ -228,6 +228,7 @@ nav {
 }
 
 .profile-dropdown__item {
+    color: black;
     cursor: pointer;
     box-sizing: border-box;
     width: 100%;
@@ -368,6 +369,11 @@ main {
     display: flex;
     flex-direction: column;
     margin-top: 4rem;
+    min-height: calc(100% - 4rem);
+}
+
+.d-none {
+    display: none;
 }
 
 .text-main-l {

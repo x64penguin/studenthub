@@ -1,0 +1,123 @@
+nav {
+    position: fixed;
+    width: 100%;
+    height: 4rem;
+    display: flex;
+    vertical-align: middle;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    padding: 0 15%;
+    border-bottom: 1px solid rgb(190, 190, 190);
+}
+
+.nav__title {
+    display: inline-block;
+    font-family: 'Fredoka One';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 2rem;
+    line-height: 4rem;
+    cursor: pointer;
+
+    background: linear-gradient(92.75deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.68) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
+
+.nav__catalog {
+    height: 2rem;
+    padding: 0.2rem 0.8rem;
+    margin: auto;
+    line-height: 1.6rem;
+    font-size: 1.2rem;
+    border-radius: 2rem;
+    transition: background-color .2s ease-out, color .2s ease-out, box-shadow .2s ease-out;
+    cursor: pointer;
+}
+
+.nav__catalog:hover {
+    background-color: rgb(84, 105, 255);
+    box-shadow: 0 0 20px rgba(84, 105, 255, 0.1);
+    color: white;
+}
+
+.nav__links {
+    display: flex;
+    height: 100%;
+    gap: 0.5rem;
+    margin-right: 1rem;
+}
+
+.profile__wrapper {
+    height: 100%;
+    display: flex;
+    margin-left: 0.25rem;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.profile {
+    margin-left: 0.75rem;
+    height: fit-content;
+    display: flex;
+    transition: background-color .25s;
+    box-sizing: border-box;
+    padding: 0.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.link-btn {
+    margin: auto;
+    height: 2rem;
+    padding: 0.2rem 0.8rem;
+    line-height: 1.6rem;
+    font-size: 1.2rem;
+    border-radius: 1rem;
+    transition: background-color .2s ease-out, box-shadow .2s ease-out;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+.link-btn:hover {
+    background-color: white;
+    box-shadow: 0 0 30px rgb(0, 0, 0, 0.05);
+}
+
+@media (max-width: 1320px) {
+    nav {
+        height: 4.5rem;
+        padding: 0 10%;
+    }
+
+    .nav__title {
+        line-height: 4.5rem;
+    }
+
+    .nav__links {
+        gap: 0;
+    }
+
+    .profile__wrapper {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 1120px) {
+    nav {
+        padding: 0 16px;
+    }
+}
+
+@media (max-width: 900px) {
+    .nav__menu {
+        display: flex;
+    }
+
+    .nav__links, .nav__catalog, .profile__wrapper {
+        display: none;
+    }
+}

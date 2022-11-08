@@ -13,6 +13,10 @@ def load_user(uid):
     return User.query.get(int(uid))
 
 
+def get_user(uid):
+    return User.query.filter_by(id=uid).first()
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True)

@@ -26,7 +26,7 @@ $(function() {
         }
 
         if (!$.contains(profile[0], target[0])) {
-            profile_dropdown.css("opactiy", "0");
+            profile_dropdown.css("opacity", 0);
             profile_dropdown.css("pointer-events", "none");
         }
     })

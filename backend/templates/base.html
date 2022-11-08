@@ -13,7 +13,7 @@
 <body>
     <div class="layout">
         <nav>
-            <a class="nav__title">studenthub</a>
+            <a class="nav__title" href="{{ url_for('index') }}">studenthub</a>
             <a class="nav__catalog">Каталог</a>
             <div class="nav__links">
                 <a href="http://" class="link-btn my-a">О проекте</a>
@@ -27,9 +27,9 @@
                         <img src="{{ user.avatar or '../static/images/avatar-default.svg'}}" alt="avatar" class="profile__avatar">
                     </div>
                     <div class="profile-dropdown block-default">
-                        <a class="profile-dropdown__item">Профиль</a>
+                        <a class="profile-dropdown__item" href="{{ url_for('user_page', uid=user.id) }}">Профиль</a>
                         <a class="profile-dropdown__item">Настройки</a>
-                        <a class="profile-dropdown__item">Выйти</a>
+                        <a class="profile-dropdown__item" href="{{ url_for('logout') }}">Выйти</a>
                     </div>
                 {% else %}
                     <a href="{{ url_for('login_page') }}" class="link-btn my-a">Войти</a>
@@ -53,6 +53,9 @@
                 </div>
             </div>
         </nav>
+
+        {% block before_content %}
+        {% endblock before_content %}
 
         <main>
             {% block content %}
