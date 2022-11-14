@@ -20,6 +20,7 @@ def get_user(uid):
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True)
+    name = db.Column(db.String(64))
     email = db.Column(db.String(128), unique=True)
     account_type = db.Column(db.Integer)
     password_hash = db.Column(db.String(128))

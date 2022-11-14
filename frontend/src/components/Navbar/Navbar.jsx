@@ -2,7 +2,39 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../store/User/selectors";
 import { DDItem, Dropdown } from "../Dropdown/Dropdown";
-import "./Navbar.css"
+import { Link, redirect } from "react-router-dom";
+import menu_icon from "./menu.svg";
+import "./Navbar.css";
+
+function NavMenu(props) {
+    const [opened, setOpened] = useState(false);
+    const user = useSelector((state) => selectUser(state));
+
+    let user_authed = <>
+        <DDItem>Профиль</DDItem>
+        <DDItem>Настройки</DDItem>
+        <DDItem>Выйти</DDItem>
+    </>;
+
+    let user_unauthed = <>
+        <DDItem>Войти</DDItem>
+        <DDItem>Регистрация</DDItem>
+    </>
+
+    return (
+        <div className="menu-dropdown__wrapper">
+            <button type="button" className="menu-button" onClick={() => setOpened(!opened)}><img src={menu_icon}/></button>
+            <Dropdown opened={opened}>
+                <DDItem link="/catalog">Каталог</DDItem>
+                <DDItem link="/about">О проекте</DDItem>
+                <DDItem>Учителям</DDItem>
+                <DDItem>Ученикам</DDItem>
+                
+                { user.auth ? user_authed : user_unauthed }
+            </Dropdown>
+        </div>
+    )
+}
 
 function Profile() {
     const [opened, setOpened] = useState(false);
@@ -16,15 +48,15 @@ function Profile() {
             </div>
 
             <Dropdown opened={opened}>
-                <DDItem>Профиль</DDItem>
+                <DDItem link={"/user/" + user.id}>Профиль</DDItem>
                 <DDItem>Настройки</DDItem>
                 <DDItem>Выйти</DDItem>
             </Dropdown>
         </div>
     } else {
         return <div className="profile__wrapper">
-            <a href="/login" className="link-btn">Войти</a>
-            <a href="/login" className="link-btn">Регистрация</a>
+            <Link to="/login" className="link-btn">Войти</Link>
+            <Link to="/register" className="link-btn">Регистрация</Link>
         </div>
     }
 }
@@ -32,7 +64,7 @@ function Profile() {
 export function Navbar() {
     return (
         <nav>
-            <a className="nav__title">studenthub</a>
+            <Link to="/" className="nav__title">studenthub</Link>
             <a className="nav__catalog">Каталог</a>
             <div className="nav__links">
                 <a href="" className="link-btn">О проекте</a>
@@ -40,6 +72,7 @@ export function Navbar() {
                 <span className="link-btn">Ученикам</span>
             </div>
             <Profile/>
+            <NavMenu/>
         </nav>
     )
 }

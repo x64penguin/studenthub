@@ -1,0 +1,9 @@
+.register-form__wrapper {
+    width: 30%;
+    margin: 0 auto;
+}
+
+.register-form__wrapper button {
+    margin-top: var(--default-margin);
+    margin-left: auto;
+}

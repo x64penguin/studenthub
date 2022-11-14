@@ -8,3 +8,7 @@
     flex-direction: column;
     box-sizing: border-box;
 }
+
+main {
+    margin-top: 6rem;
+}

@@ -1,0 +1,29 @@
+.input-default {
+    display: block;
+    font-family: "Roboto";
+    padding: 0.65rem;
+    border: none;
+    outline: none;
+    background: #f0f0f2;
+    border-radius: 9px;
+    transition: box-shadow .25s, background .25s;
+    width: 100%;
+}
+
+.input-default:focus-visible {
+    box-shadow: 0 0 1px 2px rgba(0, 106, 255, 0.75);
+    background: #fcfcfc;
+}
+
+.input-label {
+    display: block;
+    margin: var(--default-margin) 0 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #424244;
+}
+
+.input-invalid {
+    background-color: rgb(255, 215, 215)!important;
+    box-shadow: 0 0 0px 1px #FF0000!important;
+}

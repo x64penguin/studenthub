@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import "./Dropdown.css"
+
 const classNames = require("classnames");
 
 export function Dropdown(props) {
@@ -9,6 +12,7 @@ export function Dropdown(props) {
     } = props;
 
     let dropClass = classNames({
+        "block-default": true,
         "dropdown": true,
         "dropdown-hidden": !opened
     })
@@ -22,7 +26,11 @@ export function DDItem(props) {
     const {
         className = "",
         onClick,
+        link,
         children
     } = props;
+    if (link) {
+        return <Link to={link} className={className + " dropdown-item"} onClick={onClick}>{children}</Link>; 
+    }
     return <span className={className + " dropdown-item"} onClick={onClick}>{children}</span>
 }

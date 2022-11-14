@@ -1,0 +1,9 @@
+.login__wrapper {
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login__wrapper button {
+    margin-left: auto;
+}

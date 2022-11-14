@@ -1,0 +1,66 @@
+.default-select__wrapper {
+    margin-top: var(--default-margin);
+    position: relative;
+    width: fit-content;
+    min-width: 15rem;
+}
+
+.default-select {
+    padding: 0.65rem;
+    padding-left: 1rem;
+    background-color: #f8f8f8;
+    border: 1px solid #c5c5c5;
+    width: 100%;
+    border-radius: 9px;
+    cursor: pointer;
+    background-image: url("./arrow-down.svg");
+    background-repeat: no-repeat;
+    background-size: 1rem;
+    background-position: calc(100% - 1rem);
+    transition: border-radius .3s, background-color .3s;
+}
+
+.default-select_opened {
+    border-radius: 9px 9px 0 0;
+    border-bottom: none;
+    background-color: white;
+}
+
+.select-label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+    font-weight: 500;
+    color: #424244;
+}
+
+.select-options {
+    position: absolute;
+    width: 100%;
+    max-height: 200px;
+    border-radius: 0 0 9px 9px;
+    background-color: #fff;
+    border: 1px solid #c5c5c5;
+    transition: height .3s, opacity .3s;
+    border-top: none;
+    box-shadow: 0 15px 15px rgba(0, 0, 0, 0.05);
+    padding: 0.4rem;
+}
+
+.select-options_hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.select__option {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.6rem;
+    cursor: pointer;
+    transition: background .2s;
+    border-radius: .3rem;
+}
+
+.select__option:hover {
+    background: rgba(0, 0, 0, 0.08);
+}

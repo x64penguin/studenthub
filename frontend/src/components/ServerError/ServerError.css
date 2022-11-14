@@ -1,0 +1,7 @@
+.server-error-msg {
+    width: 100%;
+    text-align: center;
+    color: rgb(255, 50, 50);
+    display: block;
+    margin: 0.5rem 0;
+}
