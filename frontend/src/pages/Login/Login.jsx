@@ -4,13 +4,20 @@ import { Checkbox } from "../../components/Checkbox/Checkbox"
 import { Input } from "../../components/Input/Input"
 import { ServerError } from "../../components/ServerError/ServerError"
 import { api_post } from "../../utils"
+import { useDispatch } from "react-redux";
 import "./Login.css"
+import { userSlice } from "../../store/User"
+import { useNavigate, useParams } from "react-router-dom"
 
 export function Login(props) { 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState('');
     const [serverError, setServerError] = useState('');
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const params = useParams();
 
     const onSubmit = (event) => {
         event.preventDefault();
@@ -22,9 +29,10 @@ export function Login(props) {
         }
 
         api_post("login_user", request, (data) => {
-            const response = data.response;
-            if (response == "success") {
-                // TODO: redirect
+            if (data.response == "success") {
+                dispatch(userSlice.actions.login(data));
+
+                return navigate(params.redirect || "/");
             } else {
                 setServerError(data.response);
             }

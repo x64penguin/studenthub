@@ -97,16 +97,19 @@ def api_get_user():
         return {
             "auth": True,
             "user": {
+                "id": current_user.id,
                 "username": current_user.username,
                 "email": current_user.email,
                 "account-type": current_user.account_type,
                 "avatar": current_user.avatar,
-            }
+                "name": current_user.name,
+            },
         }, 200
     else:
         return {
             "auth": False,
-            "user": {}
+            "user": {},
+            "status": 200
         }, 200
 
 
@@ -118,16 +121,48 @@ def api_login_user():
     if user is None or not user.check_password(data["password"]):
         return {"response": "Неверное имя пользователся или пароль"}, 200
     else:
-        #TODO: login
-        return {"response": "success"}, 200
+        login_user(user)
+        return {
+            "response": "success", 
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "account-type": user.account_type,
+                "avatar": user.avatar,
+                "name": user.name,
+            }
+        }, 200
 
 
 @app.route("/api/validate_username", methods=["POST"])
 def api_validate_username():
     data = request.json
 
-    return {"response": User.query.filter_by(username=data["username"]).first() is None}, 200
+    return {"response": len(data['username']) != 0 and User.query.filter_by(username=data["username"]).first() is None}, 200
 
+
+@app.route("/api/register", methods=["POST"])
+def register():
+    data = request.json
+
+    if User.query.filter_by(username=data["username"]).first() is not None:
+        return {"error": "Имя пользователся уже занято"}, 200
+    
+    user = User(username=data["username"], email=data["email"], account_type=data["account-type"], name=data["name"])
+    user.set_password(data["password"])
+    db.session.add(user)
+    db.session.commit()
+
+    return {"response": "success"}, 200
+
+
+@app.route("/api/logout")
+def logout():
+    if current_user is None:
+        return {"response": "not logged in"}
+    else:
+        logout_user(current_user)
 
 @app.after_request
 def add_header(response):

@@ -1,24 +1,33 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../../store/User/selectors";
 import { DDItem, Dropdown } from "../Dropdown/Dropdown";
 import { Link, redirect } from "react-router-dom";
 import menu_icon from "./menu.svg";
 import "./Navbar.css";
+import { api_get } from "../../utils";
+import { userSlice } from "../../store/User";
+
+
+function logout(dispatch) {
+    api_get("logout");
+    dispatch(userSlice.actions.logout());
+}
 
 function NavMenu(props) {
     const [opened, setOpened] = useState(false);
     const user = useSelector((state) => selectUser(state));
+    const dispatch = useDispatch();
 
     let user_authed = <>
         <DDItem>Профиль</DDItem>
         <DDItem>Настройки</DDItem>
-        <DDItem>Выйти</DDItem>
+        <DDItem onClick={() => logout(dispatch)}>Выйти</DDItem>
     </>;
 
     let user_unauthed = <>
-        <DDItem>Войти</DDItem>
-        <DDItem>Регистрация</DDItem>
+        <DDItem link="/login">Войти</DDItem>
+        <DDItem link="/register">Регистрация</DDItem>
     </>
 
     return (
@@ -39,18 +48,19 @@ function NavMenu(props) {
 function Profile() {
     const [opened, setOpened] = useState(false);
     const user = useSelector((state) => selectUser(state));
+    const dispatch = useDispatch();
 
     if (user.auth) {
         return <div className="profile__wrapper">
             <div className="profile" onClick={() => setOpened(!opened)}>
-                <span className="profile__name">{user.auth}</span>
+                <span className="profile__name">{user.user.username}</span>
                 {/* тут автар */}
             </div>
 
             <Dropdown opened={opened}>
-                <DDItem link={"/user/" + user.id}>Профиль</DDItem>
+                <DDItem link={"/user/" + user.user.id}>Профиль</DDItem>
                 <DDItem>Настройки</DDItem>
-                <DDItem>Выйти</DDItem>
+                <DDItem onClick={() => logout(dispatch)}>Выйти</DDItem>
             </Dropdown>
         </div>
     } else {

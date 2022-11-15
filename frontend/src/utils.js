@@ -34,3 +34,13 @@ export function api_get(api, successCallback, errorCallback) {
 export function api_post(api, body, successCallback, errorCallback) {
     post("/api/" + api, body, successCallback, errorCallback);
 }
+
+export async function async_api_post(api, body, errorCallback) {
+    return await fetch(API_SERVER + "/api/" + api, {
+        method: "POST", 
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    }).catch(errorCallback);
+}

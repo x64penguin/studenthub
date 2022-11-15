@@ -7,3 +7,15 @@
 .login__wrapper button {
     margin-left: auto;
 }
+
+@media (min-width: 2560px) {
+    .login__wrapper {
+        width: 20%;
+    }
+}
+
+@media (max-width: 500px) {
+    .login__wrapper {
+        width: 90%;
+    }
+}

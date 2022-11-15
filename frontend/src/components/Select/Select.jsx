@@ -29,8 +29,8 @@ export function Select(props) {
         </div>
         <div className={classNames({"select-options": true, "select-options_hidden": !opened})}>
             {
-                options.map((option) => {
-                    return <Option onClick={() => {setActive(option.props.children); setOpened(false);}}>{option.props.children}</Option>
+                options.map((option, index) => {
+                    return <Option onClick={() => {setActive(option.props.children); setOpened(false); onChange(index)}}>{option.props.children}</Option>
                 })
             }
         </div>

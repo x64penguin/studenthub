@@ -12,6 +12,7 @@ export function Layout(props) {
 
     useEffect(() => {
         api_get("user", (data) => {
+            console.log(data);
             dispatch(userSlice.actions.update(data));
             setLoaded(true);
         })
