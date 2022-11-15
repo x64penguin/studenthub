@@ -160,9 +160,10 @@ def register():
 @app.route("/api/logout")
 def logout():
     if current_user is None:
-        return {"response": "not logged in"}
+        return {"response": "not logged in"}, 401
     else:
-        logout_user(current_user)
+        logout_user()
+        return {"response": "success"}, 200
 
 @app.after_request
 def add_header(response):
