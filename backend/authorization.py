@@ -1,5 +1,5 @@
 from flask import request
-from models import User
+from models import User, UserSession
 from functools import wraps
 from app import app, db
 from datetime import datetime, timedelta
@@ -28,6 +28,11 @@ def login_required(f):
         if data["exp"] < datetime.utcnow().timestamp():
             return {"response": "session expired"}, 401
 
+        session = UserSession.query.filter_by(user_id=user.id).first()
+
+        if session is None or session.ip != request.remote_addr:
+            return {"response": "stop stealing accounts"}, 401
+
         return f(user, *args, **kwargs)
 
     return decorated
@@ -50,6 +55,11 @@ def get_current_user() -> User:
     if data["exp"] < datetime.utcnow().timestamp():
         return None
 
+    session = UserSession.query.filter_by(user_id=user.id).first()
+
+    if session is None or session.ip != request.remote_addr: # anti token leak
+        return None
+
     return user
 
 
@@ -60,12 +70,21 @@ def login_user(user: User) -> tuple[str, datetime]:
         "exp": expiration_time
     }, app.config["SECRET_KEY"])
 
+    session = UserSession(user_id=user.id, token=token, ip=request.remote_addr)
+    db.session.add(session)
+    db.session.commit()
+
     return token, expiration_time
 
 
 def logout_user(user: User):
-    #TODO: crete db sessions by ip
-    ...
+    session = UserSession.query.filter_by(ip=request.remote_addr).first()
+
+    if session is None: # shouldnt be none, if none account is stolen xD
+        return
+
+    db.session.delete(session)
+    db.session.commit()
 
 
 def reset_token(user: User) -> str:
