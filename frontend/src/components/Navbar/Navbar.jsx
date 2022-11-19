@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../../store/User/selectors";
-import { DDItem, Dropdown } from "../Dropdown/Dropdown";
+import { DropdownItem, Dropdown } from "../Dropdown/Dropdown";
 import { Link, redirect } from "react-router-dom";
 import menu_icon from "./menu.svg";
 import "./Navbar.css";
 import { api_get } from "../../utils";
 import { userSlice } from "../../store/User";
+import default_avatar from "./avatar-default.svg";
 
 
 function logout(dispatch) {
@@ -20,24 +21,24 @@ function NavMenu(props) {
     const dispatch = useDispatch();
 
     let user_authed = <>
-        <DDItem>Профиль</DDItem>
-        <DDItem>Настройки</DDItem>
-        <DDItem onClick={() => logout(dispatch)}>Выйти</DDItem>
+        <DropdownItem>Профиль</DropdownItem>
+        <DropdownItem>Настройки</DropdownItem>
+        <DropdownItem onClick={() => logout(dispatch)}>Выйти</DropdownItem>
     </>;
 
     let user_unauthed = <>
-        <DDItem link="/login">Войти</DDItem>
-        <DDItem link="/register">Регистрация</DDItem>
+        <DropdownItem link="/login">Войти</DropdownItem>
+        <DropdownItem link="/register">Регистрация</DropdownItem>
     </>
 
     return (
         <div className="menu-dropdown__wrapper">
             <button type="button" className="menu-button" onClick={() => setOpened(!opened)}><img src={menu_icon}/></button>
             <Dropdown opened={opened}>
-                <DDItem link="/catalog">Каталог</DDItem>
-                <DDItem link="/about">О проекте</DDItem>
-                <DDItem>Учителям</DDItem>
-                <DDItem>Ученикам</DDItem>
+                <DropdownItem link="/catalog">Каталог</DropdownItem>
+                <DropdownItem link="/about">О проекте</DropdownItem>
+                <DropdownItem>Учителям</DropdownItem>
+                <DropdownItem>Ученикам</DropdownItem>
                 
                 { user.auth ? user_authed : user_unauthed }
             </Dropdown>
@@ -54,13 +55,13 @@ function Profile() {
         return <div className="profile__wrapper">
             <div className="profile" onClick={() => setOpened(!opened)}>
                 <span className="profile__name">{user.user.username}</span>
-                {/* тут автар */}
+                <img src={user.user.avatar || default_avatar}/>
             </div>
 
             <Dropdown opened={opened}>
-                <DDItem link={"/user/" + user.user.id}>Профиль</DDItem>
-                <DDItem>Настройки</DDItem>
-                <DDItem onClick={() => logout(dispatch)}>Выйти</DDItem>
+                <DropdownItem link={"/user/" + user.user.id}>Профиль</DropdownItem>
+                <DropdownItem>Настройки</DropdownItem>
+                <DropdownItem onClick={() => logout(dispatch)}>Выйти</DropdownItem>
             </Dropdown>
         </div>
     } else {

@@ -22,7 +22,7 @@ export function Dropdown(props) {
     </div>
 }
 
-export function DDItem(props) {
+export function DropdownItem(props) {
     const {
         className = "",
         onClick,

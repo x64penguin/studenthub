@@ -11,11 +11,10 @@ export function Layout(props) {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        api_get("user", (data) => {
-            console.log(data);
+        api_get("load_user", (data) => {
             dispatch(userSlice.actions.update(data));
             setLoaded(true);
-        })
+        }, error => "")
     });
 
     return (

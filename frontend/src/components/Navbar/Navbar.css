@@ -63,6 +63,8 @@ nav {
 
 .profile {
     margin-left: 0.75rem;
+    margin-top: auto;
+    margin-bottom: auto;
     height: fit-content;
     display: flex;
     transition: background-color .25s;
@@ -70,6 +72,18 @@ nav {
     padding: 0.5rem;
     border-radius: 12px;
     cursor: pointer;
+    gap: 10px;
+}
+
+.profile__name {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.profile > img {
+    display: block;
+    width: 3rem;
+    height: 3rem;
 }
 
 .link-btn {

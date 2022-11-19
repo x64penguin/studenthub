@@ -1,7 +1,7 @@
 import { API_SERVER } from "./config";
 
 export function get(url, successCallback, errorCallback) {
-    fetch(API_SERVER + url).then((res) => res.json()).then(successCallback, (error) => {
+    fetch(API_SERVER + url, {credentials: "include"}).then((res) => res.json()).then(successCallback, (error) => {
         if (errorCallback == undefined) {
             console.error(`GET request error: ${error}`);
         } else {
@@ -17,7 +17,8 @@ export function post(url, body, successCallback, errorCallback) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify(body),
+            credentials: "include"
         }).then((data) => data.json()).then(successCallback, (error) => {
         if (errorCallback == undefined) {
             console.error(`POST request error: ${error}`);
@@ -41,6 +42,7 @@ export async function async_api_post(api, body, errorCallback) {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        credentials: "include"
     }).catch(errorCallback);
 }
