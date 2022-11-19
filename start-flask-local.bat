@@ -1,1 +1,0 @@
-"D:\studenthub\.venv\Scripts\flask.exe" --app "D:\studenthub\backend\app.py" run

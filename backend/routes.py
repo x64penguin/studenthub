@@ -9,7 +9,7 @@ from models import load_user, get_user, User
 import jwt
 import uuid
 from datetime import datetime, timedelta
-from authorization import get_current_user, login_required, login_user, logout_user, reset_token
+from authorization import get_current_user, login_required, login_user, logout_user
 
 
 @app.route("/api/validate_username", methods=["POST"])
@@ -30,14 +30,7 @@ def load_user():
         }, 200
     else:
         return {
-            "user": {
-                "id": user.id,
-                "username": user.username,
-                "name": user.name,
-                "email": user.email,
-                "account_type": user.account_type,
-                "avatar": user.avatar
-            },
+            "user": user.json_safe(),
             "auth": True
         }, 200
 
@@ -50,22 +43,9 @@ def login():
     if user is None or not user.check_password(data["password"]):
         return {"response": "Неверное имя пользователся или пароль"}, 200
     else:
-        token, expires = login_user(user)
-        resp = make_response({
-            "response": "success", 
-            "token": token, 
-            "user": {
-                "id": user.id,
-                "username": user.username,
-                "name": user.name,
-                "email": user.email,
-                "account_type": user.account_type,
-                "avatar": user.avatar
-            },
-        }, 200)
-        resp.set_cookie("token", token, expires=expires, domain="192.168.0.251")
+        login_user(user)
 
-        return resp
+        return {"response": "success", "user": user.json_safe()}, 200
 
 
 @app.route("/api/register", methods=["POST"])
@@ -88,18 +68,7 @@ def register():
 def logout(user):
     logout_user(user)
 
-    resp = make_response({"response": "success"})
-    resp.set_cookie("token", value="", expires=0)
-
-    return resp
-
-
-@app.route("/api/regenerate_token")
-@login_required
-def regenerate_token(user):
-    token = reset_token(user)
-
-    return {"response": "success", "token": token}, 200
+    return {"response": "success"}, 200
 
 
 
@@ -111,14 +80,7 @@ def get_user(uid):
         return {"response": "404"}, 404
     return {
         "response": "success", 
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-            "account-type": user.account_type,
-            "avatar": user.avatar,
-            "name": user.name,
-        }
+        "user": user.json()
     }
 
 
