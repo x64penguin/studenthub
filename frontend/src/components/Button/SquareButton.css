@@ -1,0 +1,16 @@
+.controls.square-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    background-color: #ddd;
+    cursor: pointer;
+}
+
+.controls.square-button > img {
+    width: 1.6rem;
+    height: 1.6rem;
+    margin: auto;
+}

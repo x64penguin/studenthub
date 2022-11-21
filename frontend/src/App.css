@@ -9,6 +9,9 @@ body,
 
     --default-margin: 1rem;
     --default-padding: 1.4rem;
+    --text-main: #1d1d1d;
+    --controls-primary: rgb(17, 112, 255);
+    --controls-primary-hovered: rgb(17, 112, 218);
 }
 
 * {
@@ -20,7 +23,7 @@ body {
     margin: 0;
     padding: 0;
     background: #f0f0f2;
-    color: #1D1D1D
+    color: var(--text-main);
 }
 
 a {
@@ -43,4 +46,8 @@ a {
     font-weight: 600;
     display: block;
     margin: 0;
+}
+
+.controls {
+    transition: background-color .25s;
 }

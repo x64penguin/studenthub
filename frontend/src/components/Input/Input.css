@@ -23,7 +23,7 @@
     color: #424244;
 }
 
-.input-invalid {
+.input-default.invalid {
     background-color: rgb(255, 215, 215)!important;
     box-shadow: 0 0 0px 1px #FF0000!important;
 }

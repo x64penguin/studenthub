@@ -1,4 +1,4 @@
-import "./Input.css"
+import "./Input.css";
 const classnames = require("classnames");
 
 export function Input(props) {
@@ -7,16 +7,25 @@ export function Input(props) {
         label = "",
         placeholder = "",
         type = "text",
+        value = "",
         onChange,
     } = props;
 
     const classes = classnames({
         "input-default": true,
-        "input-invalid": invalid
-    })
+        invalid: invalid,
+    });
 
-    return <>
-        <label className="input-label">{label}</label>
-        <input type={type} className={classes} placeholder={placeholder} onChange={onChange}/>
-    </>
+    return (
+        <>
+            <label className="input-label">{label}</label>
+            <input
+                type={type}
+                className={classes}
+                placeholder={placeholder}
+                onChange={onChange}
+                defaultValue={value || ""}
+            />
+        </>
+    );
 }

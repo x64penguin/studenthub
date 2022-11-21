@@ -8,16 +8,17 @@ export function Dropdown(props) {
     const {
         children, 
         opened, 
-        className = ""
+        className = "",
+        onClick
     } = props;
 
     let dropClass = classNames({
         "block-default": true,
         "dropdown": true,
-        "dropdown-hidden": !opened
+        "hidden": !opened
     })
 
-    return <div className={className + dropClass}>
+    return <div onClick={onClick} className={className + dropClass}>
         { children }
     </div>
 }
@@ -29,6 +30,7 @@ export function DropdownItem(props) {
         link,
         children
     } = props;
+
     if (link) {
         return <Link to={link} className={className + " dropdown-item"} onClick={onClick}>{children}</Link>; 
     }

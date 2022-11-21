@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ButtonFilled } from "../../components/Button/Button";
+import { Button } from "../../components/Button/Button";
 import { Input } from "../../components/Input/Input";
 import { Option, Select } from "../../components/Select/Select";
 import { api_get, api_post, async_api_post } from "../../utils";
@@ -60,7 +60,7 @@ export function Register(props) {
                 <Option>Учитель</Option>
             </Select>
             <ServerError error={serverError}/>
-            <ButtonFilled>Зрегистрироваться</ButtonFilled>
+            <Button>Зрегистрироваться</Button>
         </form>
     </div>
 }

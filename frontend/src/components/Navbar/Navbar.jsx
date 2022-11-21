@@ -20,6 +20,8 @@ function NavMenu(props) {
     const user = useSelector((state) => selectUser(state));
     const dispatch = useDispatch();
 
+    const closeMenu = () => setOpened(false);
+
     let user_authed = <>
         <DropdownItem>Профиль</DropdownItem>
         <DropdownItem>Настройки</DropdownItem>
@@ -34,7 +36,7 @@ function NavMenu(props) {
     return (
         <div className="menu-dropdown__wrapper">
             <button type="button" className="menu-button" onClick={() => setOpened(!opened)}><img src={menu_icon}/></button>
-            <Dropdown opened={opened}>
+            <Dropdown onClick={closeMenu} opened={opened}>
                 <DropdownItem link="/catalog">Каталог</DropdownItem>
                 <DropdownItem link="/about">О проекте</DropdownItem>
                 <DropdownItem>Учителям</DropdownItem>
@@ -51,6 +53,8 @@ function Profile() {
     const user = useSelector((state) => selectUser(state));
     const dispatch = useDispatch();
 
+    const closeMenu = () => setOpened(false);
+
     if (user.auth) {
         return <div className="profile__wrapper">
             <div className="profile" onClick={() => setOpened(!opened)}>
@@ -58,7 +62,7 @@ function Profile() {
                 <img src={user.user.avatar || default_avatar}/>
             </div>
 
-            <Dropdown opened={opened}>
+            <Dropdown onClick={closeMenu} opened={opened}>
                 <DropdownItem link={"/user/" + user.user.id}>Профиль</DropdownItem>
                 <DropdownItem>Настройки</DropdownItem>
                 <DropdownItem onClick={() => logout(dispatch)}>Выйти</DropdownItem>

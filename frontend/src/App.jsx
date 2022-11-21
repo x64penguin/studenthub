@@ -5,6 +5,8 @@ import { store } from "./store"
 import "./App.css"
 import { Login } from "./pages/Login/Login";
 import { Register } from "./pages/Register/Register";
+import { ProfilePage } from "./pages/Profile/Profile";
+import { ProfileEdit } from "./pages/ProfileEdit/ProfileEdit";
 
 function App() {
     return (
@@ -15,6 +17,8 @@ function App() {
                         <Route index element={"index"}/>
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/register" element={<Register/>}/>
+                        <Route path="/user/:userId" element={<ProfilePage/>}/>
+                        <Route path="/user/:userId/edit" element={<ProfileEdit/>}/>
                     </Routes>
                 </Layout>
             </BrowserRouter>

@@ -1,17 +1,18 @@
-.button-filled {
+.button {
     display: block;
     padding: 0.6rem 1rem;
-    background-color: rgb(17, 112, 255);
-    color: #fff;
     font-size: 1rem;
     font-weight: 500;
     border-radius: 14px;
-    transition: background-color .25s;
-    border: none;
     outline: none;
     cursor: pointer;
 }
 
-.button-filled:hover {
+.button.primary {
+    background-color: var(--controls-primary);
+    color: #fff;
+}
+
+.button.primary:hover {
     background-color: rgb(17, 112, 218);
 }

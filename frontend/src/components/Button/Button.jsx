@@ -1,7 +1,14 @@
+import classNames from "classnames"
 import "./Button.css"
 
-export function ButtonFilled(props) {
-    return <button className={props.className + " button-filled"} onClick={props.onClick}>
-        {props.children}
+export function Button(props) {
+    const {
+        className="",
+        onClick,
+        children,
+        type="primary"
+    } = props;
+    return <button className={className + " controls button " + type} onClick={onClick}>
+        {children}
     </button>
 }

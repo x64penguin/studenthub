@@ -72,12 +72,17 @@ def logout(user):
 
 
 
-@app.route("/api/get_user/<int:uid>")
+@app.route("/api/user/<int:uid>")
 def get_user(uid):
-    user = User.query.filter_by(id=uid).first()
+    current_user = get_current_user()
+    user: User = User.query.filter_by(id=uid).first()
 
     if user is None:
         return {"response": "404"}, 404
+    
+    if user == current_user:
+        return {"response": "success", "user": user.json_safe()}
+
     return {
         "response": "success", 
         "user": user.json()
@@ -87,6 +92,6 @@ def get_user(uid):
 @app.after_request
 def add_header(response: Response):
     response.headers['Access-Control-Allow-Origin'] = request.headers["origin"]
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Origin, X-Requested-With'
+    response.headers['Access-Control-Allow-Headers'] = '*'
     response.headers['Access-Control-Allow-Credentials'] = "true"
     return response

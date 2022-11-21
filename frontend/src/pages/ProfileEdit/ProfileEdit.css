@@ -1,0 +1,9 @@
+.profile-edit {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-edit > .tab-content.hidden {
+    display: none;
+}

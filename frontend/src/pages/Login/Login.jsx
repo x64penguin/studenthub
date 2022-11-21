@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { ButtonFilled } from "../../components/Button/Button"
+import { Button } from "../../components/Button/Button"
 import { Input } from "../../components/Input/Input"
 import { ServerError } from "../../components/ServerError/ServerError"
 import { api_post} from "../../utils"
@@ -42,7 +42,7 @@ export function Login(props) {
             <Input label="Имя пользователя" onChange={(event) => setUsername(event.target.value)}/>
             <Input label="Пароль" type="password" onChange={(event) => setPassword(event.target.value)}/>
             <ServerError error={serverError}/>
-            <ButtonFilled>Войти</ButtonFilled>
+            <Button>Войти</Button>
         </form>
     </div>
 }

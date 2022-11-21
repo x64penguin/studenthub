@@ -1,0 +1,82 @@
+.profile-page {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-page__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-page__header > .avatar {
+    width: 7rem;
+    height: 7rem;
+    border-radius: 18px;
+}
+
+.profile-page__header > div > h1 {
+    display: inline-block;
+    margin-right: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-page__header > h2 {
+    font-weight: 400;
+    margin-top: 0.5rem;
+}
+
+.profile-badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    cursor: default;
+    user-select: none;
+}
+
+.profile-badge.admin {
+    color: red;
+    border: 2px solid red;
+}
+
+.profile_tab-switch > span.active {
+    background-color: #FFF!important;
+    color: black!important;
+}  
+
+.profile_tab-switch {
+    background-color: #EEEEEE;
+}
+
+.profile-page > .tab-switch {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+}
+
+.profile-stats__label {
+    font-weight: 500;
+    margin-right: 0.5rem;   
+}
+
+.profile-stats {
+    margin-right: 1rem;
+}
+
+.edit-profile-btn {
+    margin-left: auto;
+}
+
+@media (max-width: 768px) {
+    .profile-page {
+        width: 80%;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-page {
+        width: 96%;
+    }
+}
