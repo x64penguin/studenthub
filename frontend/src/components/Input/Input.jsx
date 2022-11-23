@@ -4,11 +4,13 @@ const classnames = require("classnames");
 export function Input(props) {
     const {
         invalid = false,
-        label = "",
+        label,
         placeholder = "",
         type = "text",
         value = "",
+        className = "",
         onChange,
+        name,
     } = props;
 
     const classes = classnames({
@@ -16,16 +18,30 @@ export function Input(props) {
         invalid: invalid,
     });
 
-    return (
-        <>
-            <label className="input-label">{label}</label>
+    if (!label) {
+        return (
             <input
                 type={type}
-                className={classes}
+                className={classes + " " + className}
                 placeholder={placeholder}
                 onChange={onChange}
                 defaultValue={value || ""}
+                id={name}
             />
-        </>
-    );
+        );
+    } else {
+        return (
+            <div className={"input-group " + className}>
+                <label>{label}</label>
+                <input
+                    type={type}
+                    className={classes}
+                    placeholder={placeholder}
+                    onChange={onChange}
+                    defaultValue={value || ""}
+                    id={name}
+                />
+            </div>
+        );
+    }
 }

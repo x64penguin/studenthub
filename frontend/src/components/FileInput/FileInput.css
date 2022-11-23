@@ -1,0 +1,14 @@
+.file-input {
+    padding: 0;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: var(--border-radius);
+    font-family: "Roboto";
+}
+
+.file-input::-webkit-file-upload-button {
+    padding: 0.65rem;
+    border: none;
+    cursor: pointer;
+    background-color: var(--background-secondary);
+}

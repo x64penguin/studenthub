@@ -4,10 +4,10 @@ import { ErrorPage } from "../../components/ErrorPage/ErrorPage";
 import { Loading } from "../../components/Loading/Loading";
 import { api_get, getStaticFile } from "../../utils";
 import "./Profile.css";
-import avatart_default from "../../components/Navbar/avatar-default.svg";
 import { TabLabel, TabSwitch } from "../../components/TabSwitch/TabSwitch";
 import { SquareButton } from "../../components/Button/SquareButton";
 import settings_icon from "./settings_icon.svg";
+import { API_SERVER } from "../../config";
 
 export function ProfilePage() {
     const { userId } = useParams();
@@ -49,7 +49,7 @@ export function ProfilePage() {
         <div className="block-default profile-page">
             <div className="profile-page__header">
                 <img
-                    src={user.avatar || avatart_default}
+                    src={`${API_SERVER}/static/avatar/${user.id}`}
                     alt="user avatar"
                     className="avatar"
                 />

@@ -60,7 +60,7 @@ export function Register(props) {
                 <Option>Учитель</Option>
             </Select>
             <ServerError error={serverError}/>
-            <Button>Зрегистрироваться</Button>
+            <Button type="submit">Зрегистрироваться</Button>
         </form>
     </div>
 }

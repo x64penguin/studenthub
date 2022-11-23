@@ -6,9 +6,10 @@ export function Button(props) {
         className="",
         onClick,
         children,
-        type="primary"
+        type="button",
+        style="primary"
     } = props;
-    return <button className={className + " controls button " + type} onClick={onClick}>
+    return <button type={type} className={className + " controls button " + style} onClick={onClick}>
         {children}
     </button>
 }

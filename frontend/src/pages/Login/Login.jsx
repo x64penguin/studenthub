@@ -42,7 +42,7 @@ export function Login(props) {
             <Input label="Имя пользователя" onChange={(event) => setUsername(event.target.value)}/>
             <Input label="Пароль" type="password" onChange={(event) => setPassword(event.target.value)}/>
             <ServerError error={serverError}/>
-            <Button>Войти</Button>
+            <Button type="submit">Войти</Button>
         </form>
     </div>
 }

@@ -4,6 +4,13 @@
     margin-right: auto;
 }
 
-.profile-edit > .tab-content.hidden {
+.profile-edit .tab-content.hidden {
     display: none;
+}
+
+.profile-edit .form-buttons {
+    margin-top: var(--default-margin);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
 }

@@ -89,9 +89,41 @@ def get_user(uid):
     }
 
 
+@app.route("/static/avatar/<int:uid>")
+def get_avatar(uid):
+    user = User.query.filter_by(id=uid).first()
+    default_path = os.path.join(app.config["UPLOAD_FOLDER"], "avatars", "default.svg")
+
+    if user is None:
+        return send_file(default_path)
+
+    return send_file(os.path.join(app.config["UPLOAD_FOLDER"], "avatars", user.avatar) if user.avatar is not None else default_path)
+
+
+@app.route("/api/edit_profile/<int:uid>", methods=["POST"])
+def edit_profile(uid):
+    current_user = get_current_user()
+    if current_user is None or current_user.id != uid:
+        return {"response": "unauthorized"}, 401
+
+    current_user.email = request.form["email"]
+    
+    try:
+        avatar_file = request.files["avatar"]
+        ext = avatar_file.filename.split(".")[-1]
+        avatar_path = os.path.join(app.config["UPLOAD_FOLDER"], "avatars", str(uid) + "." + ext)
+        avatar_file.save(avatar_path)
+        current_user.avatar = str(uid) + "." + ext
+    except KeyError:
+        ... # avatar not changed
+
+    db.session.commit()
+
+    return {"response": "success"}, 200
+    
+    
 @app.after_request
 def add_header(response: Response):
-    response.headers['Access-Control-Allow-Origin'] = request.headers["origin"]
+    response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Headers'] = '*'
-    response.headers['Access-Control-Allow-Credentials'] = "true"
     return response

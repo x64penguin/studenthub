@@ -7,7 +7,7 @@ import menu_icon from "./menu.svg";
 import "./Navbar.css";
 import { api_get } from "../../utils";
 import { userSlice } from "../../store/User";
-import default_avatar from "./avatar-default.svg";
+import { API_SERVER } from "../../config";
 
 
 function logout(dispatch) {
@@ -59,7 +59,7 @@ function Profile() {
         return <div className="profile__wrapper">
             <div className="profile" onClick={() => setOpened(!opened)}>
                 <span className="profile__name">{user.user.username}</span>
-                <img src={user.user.avatar || default_avatar}/>
+                <img src={`${API_SERVER}/static/avatar/${user.user.id}`}/>
             </div>
 
             <Dropdown onClick={closeMenu} opened={opened}>
