@@ -6,7 +6,7 @@ import "./App.css"
 import { Login } from "./pages/Login/Login";
 import { Register } from "./pages/Register/Register";
 import { ProfilePage } from "./pages/Profile/Profile";
-import { ProfileEdit } from "./pages/ProfileEdit/ProfileEdit";
+import { ProfileSettings } from "./pages/ProfileSettings/ProfileSettings";
 
 function App() {
     return (
@@ -18,7 +18,7 @@ function App() {
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/register" element={<Register/>}/>
                         <Route path="/user/:userId" element={<ProfilePage/>}/>
-                        <Route path="/user/:userId/edit" element={<ProfileEdit/>}/>
+                        <Route path="/user/:userId/edit" element={<ProfileSettings/>}/>
                     </Routes>
                 </Layout>
             </BrowserRouter>

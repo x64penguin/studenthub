@@ -8,6 +8,7 @@
     cursor: pointer;
     font-weight: 400;
     font-family: "Roboto";
+    height: fit-content;
 }
 
 .button.primary {

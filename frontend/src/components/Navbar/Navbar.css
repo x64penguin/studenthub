@@ -153,4 +153,8 @@ nav .link-btn:hover {
     .menu-dropdown__wrapper {
         display: flex;
     }
+
+    nav .profile {
+        display: none;
+    }
 }

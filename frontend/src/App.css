@@ -65,3 +65,9 @@ a {
     font-weight: 500;
     color: #424244;
 }
+
+@media (max-width: 768px) {
+    .block-default {
+        padding: 0.9rem;
+    }
+}

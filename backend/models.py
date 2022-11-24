@@ -39,6 +39,7 @@ class User(UserMixin, db.Model):
 
         for session in self.sessions:
             sessions.append({
+                "device": session.device,
                 "ip": session.ip,
                 "expires": session.expires,
             })
@@ -75,6 +76,7 @@ class UserSession(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     expires = db.Column(db.DateTime)
     ip = db.Column(db.String(32))
+    device = db.Column(db.String(128))
 
     def check(self, request) -> bool:
         return request.remote_addr == self.ip and datetime.utcnow() < self.expires

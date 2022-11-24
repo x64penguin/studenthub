@@ -10,6 +10,7 @@ import jwt
 import uuid
 from datetime import datetime, timedelta
 from authorization import get_current_user, login_required, login_user, logout_user
+from PIL import Image
 
 
 @app.route("/api/validate_username", methods=["POST"])
@@ -55,7 +56,7 @@ def register():
     if User.query.filter_by(username=data["username"]).first() is not None:
         return {"error": "Имя пользователся уже занято"}, 200
     
-    user = User(username=data["username"], email=data["email"], account_type=data["account-type"], name=data["name"], uuid=uuid.uuid4().hex)
+    user = User(username=data["username"], email=data["email"], account_type=data["account-type"], name=data["name"])
     user.set_password(data["password"])
     db.session.add(user)
     db.session.commit()
@@ -111,6 +112,8 @@ def edit_profile(uid):
     try:
         avatar_file = request.files["avatar"]
         ext = avatar_file.filename.split(".")[-1]
+        img = Image.open(avatar_file)
+        #TODO: crop to square and resize 256x256
         avatar_path = os.path.join(app.config["UPLOAD_FOLDER"], "avatars", str(uid) + "." + ext)
         avatar_file.save(avatar_path)
         current_user.avatar = str(uid) + "." + ext
@@ -120,7 +123,11 @@ def edit_profile(uid):
     db.session.commit()
 
     return {"response": "success"}, 200
-    
+
+
+@app.route("/api/logout_ip/<string:ip>")
+def logout_ip(ip):
+    user_session = UserS
     
 @app.after_request
 def add_header(response: Response):

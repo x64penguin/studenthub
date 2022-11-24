@@ -23,8 +23,8 @@ function NavMenu(props) {
     const closeMenu = () => setOpened(false);
 
     let user_authed = <>
-        <DropdownItem>Профиль</DropdownItem>
-        <DropdownItem>Настройки</DropdownItem>
+        <DropdownItem link={"/user/" + user.user.id}>Профиль</DropdownItem>
+        <DropdownItem link={"/user/" + user.user.id + "/edit"}>Настройки</DropdownItem>
         <DropdownItem onClick={() => logout(dispatch)}>Выйти</DropdownItem>
     </>;
 
@@ -64,7 +64,7 @@ function Profile() {
 
             <Dropdown onClick={closeMenu} opened={opened}>
                 <DropdownItem link={"/user/" + user.user.id}>Профиль</DropdownItem>
-                <DropdownItem>Настройки</DropdownItem>
+                <DropdownItem link={"/user/" + user.user.id + "/edit"}>Настройки</DropdownItem>
                 <DropdownItem onClick={() => logout(dispatch)}>Выйти</DropdownItem>
             </Dropdown>
         </div>

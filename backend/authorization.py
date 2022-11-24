@@ -1,4 +1,5 @@
 from flask import request
+from werkzeug.user_agent import UserAgent
 from models import User, UserSession
 from functools import wraps
 from app import app, db
@@ -31,8 +32,8 @@ def get_current_user() -> User:
 
 def login_user(user: User) -> tuple[str, datetime]:
     expiration_time = datetime.utcnow() + timedelta(days=30)
-
-    session = UserSession(user_id=user.id, expires=expiration_time, ip=request.remote_addr)
+    device = "Mobile" if request.user_agent.string.lower().find("mobi") != -1 else "Desktop"
+    session = UserSession(user_id=user.id, expires=expiration_time, ip=request.remote_addr, device=device)
     db.session.add(session)
     db.session.commit()
 
@@ -44,4 +45,14 @@ def logout_user(user: User):
         return
 
     db.session.delete(session)
+    db.session.commit()
+
+
+def logout_ip(ip: str):
+    session = UserSession.query.filter_by(ip=ip).first()
+
+    if session is None:
+        return
+
+    db.session.remove(session)
     db.session.commit()
