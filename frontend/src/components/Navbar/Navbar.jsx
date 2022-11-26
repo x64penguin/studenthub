@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUser } from "../../store/User/selectors";
+import { selectUser, selectUserAuthenticated } from "../../store/User/selectors";
 import { DropdownItem, Dropdown } from "../Dropdown/Dropdown";
 import { Link, redirect } from "react-router-dom";
 import menu_icon from "./menu.svg";
@@ -17,18 +17,19 @@ function logout(dispatch) {
 
 function NavMenu(props) {
     const [opened, setOpened] = useState(false);
-    const user = useSelector((state) => selectUser(state));
+    const user = useSelector(selectUser);
+    const auth = useSelector(selectUserAuthenticated);
     const dispatch = useDispatch();
 
     const closeMenu = () => setOpened(false);
 
-    let user_authed = <>
-        <DropdownItem link={"/user/" + user.user.id}>Профиль</DropdownItem>
-        <DropdownItem link={"/user/" + user.user.id + "/edit"}>Настройки</DropdownItem>
+    let userAuthed = <>
+        <DropdownItem link={"/user/" + user.id}>Профиль</DropdownItem>
+        <DropdownItem link={"/user/" + user.id + "/edit"}>Настройки</DropdownItem>
         <DropdownItem onClick={() => logout(dispatch)}>Выйти</DropdownItem>
     </>;
 
-    let user_unauthed = <>
+    let userUnauthed = <>
         <DropdownItem link="/login">Войти</DropdownItem>
         <DropdownItem link="/register">Регистрация</DropdownItem>
     </>
@@ -42,7 +43,7 @@ function NavMenu(props) {
                 <DropdownItem>Учителям</DropdownItem>
                 <DropdownItem>Ученикам</DropdownItem>
                 
-                { user.auth ? user_authed : user_unauthed }
+                { auth ? userAuthed : userUnauthed }
             </Dropdown>
         </div>
     )
@@ -50,21 +51,22 @@ function NavMenu(props) {
 
 function Profile() {
     const [opened, setOpened] = useState(false);
-    const user = useSelector((state) => selectUser(state));
+    const user = useSelector(selectUser);
+    const auth = useSelector(selectUserAuthenticated);
     const dispatch = useDispatch();
 
     const closeMenu = () => setOpened(false);
 
-    if (user.auth) {
+    if (auth) {
         return <div className="profile__wrapper">
             <div className="profile" onClick={() => setOpened(!opened)}>
-                <span className="profile__name">{user.user.username}</span>
-                <img src={`${API_SERVER}/static/avatar/${user.user.id}`}/>
+                <span className="profile__name">{user.username}</span>
+                <img src={`${API_SERVER}/static/avatar/${user.id}`}/>
             </div>
 
             <Dropdown onClick={closeMenu} opened={opened}>
-                <DropdownItem link={"/user/" + user.user.id}>Профиль</DropdownItem>
-                <DropdownItem link={"/user/" + user.user.id + "/edit"}>Настройки</DropdownItem>
+                <DropdownItem link={"/user/" + user.id}>Профиль</DropdownItem>
+                <DropdownItem link={"/user/" + user.id + "/edit"}>Настройки</DropdownItem>
                 <DropdownItem onClick={() => logout(dispatch)}>Выйти</DropdownItem>
             </Dropdown>
         </div>
@@ -82,9 +84,9 @@ export function Navbar() {
             <Link to="/" className="nav__title">studenthub</Link>
             <a className="nav__catalog">Каталог</a>
             <div className="nav__links">
-                <a href="" className="link-btn">О проекте</a>
-                <span className="link-btn">Учителям</span>
-                <span className="link-btn">Ученикам</span>
+                <a href="/about" className="link-btn">О проекте</a>
+                <a href="/create" className="link-btn">Конструктор</a>
+                <a className="link-btn">Ученикам</a>
             </div>
             <Profile/>
             <NavMenu/>

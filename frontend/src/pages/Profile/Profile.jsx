@@ -8,11 +8,14 @@ import { TabLabel, TabSwitch } from "../../components/TabSwitch/TabSwitch";
 import { SquareButton } from "../../components/Button/SquareButton";
 import settings_icon from "./settings_icon.svg";
 import { API_SERVER } from "../../config";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../store/User/selectors";
 
 export function ProfilePage() {
     const { userId } = useParams();
     const [user, setUser] = useState({});
     const [status, setStatus] = useState("loading");
+    const currentUser = useSelector(selectUser);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -72,9 +75,11 @@ export function ProfilePage() {
             <div className="tab-content">
 
             </div>
+            { user.id == currentUser.id ? 
             <SquareButton className="edit-profile-btn" onClick={() => navigate(`/user/${userId}/edit`)}>
                 <img src={settings_icon}/>
-            </SquareButton>
+            </SquareButton> : undefined
+            }
         </div>
     );
 }

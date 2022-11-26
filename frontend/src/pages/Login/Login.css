@@ -6,9 +6,6 @@
 
 .login__wrapper button {
     margin-left: auto;
-}
-
-.login__wrapper > .button {
     margin-top: var(--default-margin);
 }
 

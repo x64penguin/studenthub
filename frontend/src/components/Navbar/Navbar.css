@@ -84,6 +84,7 @@ nav .profile > img {
     display: block;
     width: 2.5rem;
     height: 2.5rem;
+    border-radius: var(--border-radius);
 }
 
 nav .link-btn {

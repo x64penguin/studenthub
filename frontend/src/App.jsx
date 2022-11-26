@@ -7,6 +7,8 @@ import { Login } from "./pages/Login/Login";
 import { Register } from "./pages/Register/Register";
 import { ProfilePage } from "./pages/Profile/Profile";
 import { ProfileSettings } from "./pages/ProfileSettings/ProfileSettings";
+import { ErrorPage } from "./components/ErrorPage/ErrorPage";
+import { CreateTest } from "./pages/CreateTest/CreateTest";
 
 function App() {
     return (
@@ -19,6 +21,8 @@ function App() {
                         <Route path="/register" element={<Register/>}/>
                         <Route path="/user/:userId" element={<ProfilePage/>}/>
                         <Route path="/user/:userId/edit" element={<ProfileSettings/>}/>
+                        <Route path="/create" element={<CreateTest/>}/>
+                        <Route path="*" element={<ErrorPage error="404"/>}/>
                     </Routes>
                 </Layout>
             </BrowserRouter>

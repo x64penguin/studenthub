@@ -1,27 +1,22 @@
 from app import app, db
-import json
 import os
 import utils
 from os.path import join
-from flask import render_template, redirect, url_for, flash, request, send_file, escape, abort, \
-    make_response, jsonify, Response
-from models import load_user, get_user, User
-import jwt
-import uuid
-from datetime import datetime, timedelta
+from flask import request, send_file, Response
+from models import get_user, User, UserSession
 from authorization import get_current_user, login_required, login_user, logout_user
 from PIL import Image
 
 
 @app.route("/api/validate_username", methods=["POST"])
-def api_validate_username():
+def api_api_validate_username():
     data = request.json
 
-    return {"response": len(data['username']) != 0 and User.query.filter_by(username=data["username"]).first() is None}, 200
+    return {"response": len(data['username']) != 0 and get_user(data["username"]) is None}, 200
 
 
 @app.route("/api/load_user")
-def load_user():
+def api_load_user():
     user = get_current_user()
 
     if user is None:
@@ -37,9 +32,9 @@ def load_user():
 
 
 @app.route("/api/login", methods=["POST"])
-def login():
+def api_login():
     data = request.json
-    user = User.query.filter_by(username=data["username"]).first()
+    user = get_user(data["username"])
 
     if user is None or not user.check_password(data["password"]):
         return {"response": "Неверное имя пользователся или пароль"}, 200
@@ -50,10 +45,10 @@ def login():
 
 
 @app.route("/api/register", methods=["POST"])
-def register():
+def api_register():
     data = request.json
 
-    if User.query.filter_by(username=data["username"]).first() is not None:
+    if get_user(data["username"]) is not None:
         return {"error": "Имя пользователся уже занято"}, 200
     
     user = User(username=data["username"], email=data["email"], account_type=data["account-type"], name=data["name"])
@@ -66,7 +61,7 @@ def register():
 
 @app.route("/api/logout")
 @login_required
-def logout(user):
+def api_logout(user):
     logout_user(user)
 
     return {"response": "success"}, 200
@@ -74,9 +69,9 @@ def logout(user):
 
 
 @app.route("/api/user/<int:uid>")
-def get_user(uid):
+def api_find_user(uid):
     current_user = get_current_user()
-    user: User = User.query.filter_by(id=uid).first()
+    user = get_user(uid)
 
     if user is None:
         return {"response": "404"}, 404
@@ -91,20 +86,20 @@ def get_user(uid):
 
 
 @app.route("/static/avatar/<int:uid>")
-def get_avatar(uid):
+def api_get_avatar(uid):
     user = User.query.filter_by(id=uid).first()
-    default_path = os.path.join(app.config["UPLOAD_FOLDER"], "avatars", "default.svg")
+    default_path = os.path.join(app.config["AVATAR_FOLDER"], "default.svg")
 
     if user is None:
         return send_file(default_path)
 
-    return send_file(os.path.join(app.config["UPLOAD_FOLDER"], "avatars", user.avatar) if user.avatar is not None else default_path)
+    return send_file(os.path.join(app.config["AVATAR_FOLDER"], user.avatar) if user.avatar is not None else default_path)
 
 
 @app.route("/api/edit_profile/<int:uid>", methods=["POST"])
-def edit_profile(uid):
-    current_user = get_current_user()
-    if current_user is None or current_user.id != uid:
+@login_required
+def api_edit_profile(current_user, uid):
+    if current_user.id != uid:
         return {"response": "unauthorized"}, 401
 
     current_user.email = request.form["email"]
@@ -114,7 +109,7 @@ def edit_profile(uid):
         ext = avatar_file.filename.split(".")[-1]
         img = Image.open(avatar_file)
         #TODO: crop to square and resize 256x256
-        avatar_path = os.path.join(app.config["UPLOAD_FOLDER"], "avatars", str(uid) + "." + ext)
+        avatar_path = os.path.join(app.config["AVATAR_FOLDER"], str(uid) + "." + ext)
         avatar_file.save(avatar_path)
         current_user.avatar = str(uid) + "." + ext
     except KeyError:
@@ -126,8 +121,24 @@ def edit_profile(uid):
 
 
 @app.route("/api/logout_ip/<string:ip>")
-def logout_ip(ip):
-    user_session = UserS
+@login_required
+def api_logout_ip(user, ip):
+    user_session = UserSession.query.filter_by(ip=ip).first()
+
+    if user_session is None:
+        return {"response": "unauthorized"}, 401
+
+    db.session.delete(user_session)
+    db.session.commit()
+
+    return {"response": "success"}, 200
+
+
+@app.route("/api/create_test", methods=["POST"])
+@login_required
+def api_create_test(user):
+
+
     
 @app.after_request
 def add_header(response: Response):

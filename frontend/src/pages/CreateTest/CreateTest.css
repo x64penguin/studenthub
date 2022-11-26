@@ -1,0 +1,10 @@
+.create-test {
+    width: 30%;
+    margin: 0 auto;
+
+}
+
+.create-test > .submit {
+    margin-top: var(--default-margin);
+    margin-left: auto;
+}

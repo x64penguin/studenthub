@@ -9,12 +9,14 @@ import { Input } from "../../components/Input/Input";
 import { FileInput } from "../../components/FileInput/FileInput";
 import { Button } from "../../components/Button/Button";
 import { API_SERVER } from "../../config";
+import { api_get } from "../../utils";
 
 function SecuritySession(props) {
     const {
         device,
         ip,
-        expires
+        expires,
+        onClick
     } = props;
 
     return <div className="security__session">
@@ -26,24 +28,24 @@ function SecuritySession(props) {
             <span>{device}</span>
             <span>Истекает: {expires}</span>
         </div>
-        <Button>Выйти</Button>
+        <Button onClick={onClick}>Выйти</Button>
     </div>;
 }
 
 export function ProfileSettings(props) {
     const { userId } = useParams();
-    const currentUser = useSelector((state) => selectUser(state));
+    const currentUser = useSelector(selectUser);
     const [activeTab, setActiveTab] = useState("Основные");
     const navigate = useNavigate();
 
     const [form, setForm] = useState({
-        email: currentUser.user.email,
-        avatar: currentUser.user.avatar,
+        email: currentUser.email,
+        avatar: currentUser.avatar,
     });
 
     const redirectToUser = () => navigate(`/user/${userId}`);
 
-    if (currentUser.user.id != userId) {
+    if (currentUser.id != userId) {
         return redirectToUser();
     }
 
@@ -58,6 +60,11 @@ export function ProfileSettings(props) {
             body: formData
         }).then(redirectToUser);
     };
+
+    const sessionLogout = (ip) => {
+        api_get("logout_ip/" + ip);
+        window.location.reload();
+    }
 
     return (
         <div className="block-default profile-edit">
@@ -98,11 +105,13 @@ export function ProfileSettings(props) {
             <div className={classNames({"tab-content": true, "hidden": activeTab != "Безопасность"})}>
                 <h2 className="section-header">Активные сессии</h2>
                 {
-                    currentUser.user.sessions.map(session => {
+                    currentUser.sessions.map((session, index)=> {
                         return <SecuritySession 
                             device={session.device}
                             ip={session.ip} 
                             expires={session.expires}
+                            onClick={() => sessionLogout(session.ip)}
+                            key={index}
                         />;
                     })
                 }

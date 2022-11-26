@@ -1,20 +1,11 @@
 from sqlalchemy import func, select
 from sqlalchemy.orm import column_property
 
-from app import db, login
+from app import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, date
 from sqlalchemy.ext.associationproxy import association_proxy
-
-
-@login.user_loader
-def load_user(uid):
-    return User.query.get(int(uid))
-
-
-def get_user(uid):
-    return User.query.filter_by(id=uid).first()
 
 
 class User(UserMixin, db.Model):
@@ -69,6 +60,14 @@ class User(UserMixin, db.Model):
             "joined": self.joined.strftime("%d %B %Y"),
             "badge": ["admin", "Админ"] if self.id == 1 else ["teacher", "Учитель"] if self.account_type == 1 else ["student", "Ученик"]
         }
+
+
+def get_user(identifier: int | str) -> User:
+    """Get user by id or username"""
+    if type(identifier) == int:
+        return User.query.filter_by(id=identifier).first()
+    else:
+        return User.query.filter_by(username=identifier).first()
 
 
 class UserSession(db.Model):

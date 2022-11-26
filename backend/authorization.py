@@ -1,10 +1,8 @@
 from flask import request
-from werkzeug.user_agent import UserAgent
 from models import User, UserSession
 from functools import wraps
 from app import app, db
 from datetime import datetime, timedelta
-import jwt, uuid
 
 
 def login_required(f):
@@ -31,6 +29,8 @@ def get_current_user() -> User:
 
 
 def login_user(user: User) -> tuple[str, datetime]:
+    if user == get_current_user():
+        return
     expiration_time = datetime.utcnow() + timedelta(days=30)
     device = "Mobile" if request.user_agent.string.lower().find("mobi") != -1 else "Desktop"
     session = UserSession(user_id=user.id, expires=expiration_time, ip=request.remote_addr, device=device)

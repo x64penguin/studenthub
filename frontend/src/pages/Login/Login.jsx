@@ -6,7 +6,7 @@ import { api_post} from "../../utils"
 import { useDispatch } from "react-redux";
 import "./Login.css"
 import { userSlice } from "../../store/User"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 
 export function Login(props) { 
     const [username, setUsername] = useState('');
@@ -15,7 +15,7 @@ export function Login(props) {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const params = useParams();
+    const [ searchParams ] = useSearchParams();
 
     const onSubmit = (event) => {
         event.preventDefault();
@@ -27,9 +27,9 @@ export function Login(props) {
 
         api_post("login", request, (data) => {
             if (data.response == "success") {
-            dispatch(userSlice.actions.login(data));
+                dispatch(userSlice.actions.login(data));
 
-                return navigate(params.redirect || "/");
+                return navigate(searchParams.get("redirect") || "/");
             } else {
                 setServerError(data.response);
             }
