@@ -3,9 +3,10 @@ import os
 import utils
 from os.path import join
 from flask import request, send_file, Response
-from models import get_user, User, UserSession
+from models import get_user, User, UserSession, Test
 from authorization import get_current_user, login_required, login_user, logout_user
 from PIL import Image
+from shtest import SHTest
 
 
 @app.route("/api/validate_username", methods=["POST"])
@@ -137,7 +138,17 @@ def api_logout_ip(user, ip):
 @app.route("/api/create_test", methods=["POST"])
 @login_required
 def api_create_test(user):
+    data = request.form
+    try:
+        image = request.files["avatar"]
+    except:
+        image = None
+    test = SHTest(user, data["name"], data["description"], image)
 
+    return {
+        "response": "success",
+        "test": test.test.id
+    }
 
     
 @app.after_request

@@ -40,7 +40,7 @@ export function ProfileSettings(props) {
 
     const [form, setForm] = useState({
         email: currentUser.email,
-        avatar: currentUser.avatar,
+        avatar: null,
     });
 
     const redirectToUser = () => navigate(`/user/${userId}`);

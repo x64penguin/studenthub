@@ -79,3 +79,11 @@ class UserSession(db.Model):
 
     def check(self, request) -> bool:
         return request.remote_addr == self.ip and datetime.utcnow() < self.expires
+
+
+class Test(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128))
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    description = db.Column(db.String(128))
+    uuid = db.Column(db.String(32))

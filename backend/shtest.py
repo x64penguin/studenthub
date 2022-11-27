@@ -1,7 +1,7 @@
-from models import User, get_user
+from models import User, Test, get_user
 from werkzeug.datastructures import FileStorage
 from uuid import uuid4
-from app import app
+from app import app, db
 
 import os, json
 
@@ -12,6 +12,9 @@ class TestDamagedException(Exception):
     pass
 
 
+TESTS_PATH = os.path.join(app.config["UPLOAD_FOLDER"], "tests")
+
+
 class SHTest:
     def __init__(self, author: User, name: str, description: str, image: FileStorage | None = None):
         self.name = name
@@ -19,11 +22,21 @@ class SHTest:
         self.uuid = uuid4().hex
         self.author = author
 
+        print(image)
+
         if image is not None:
             ext = image.filename.split('.')[-1]
-            image.save(f"{self.uuid}.{ext}")
+            image.save(os.path.join(TESTS_PATH, f"{self.uuid}.{ext}"))
 
-    def __init__(self, uuid: str):
+        self.test = Test(name=name, author_id=author.id, description=description, uuid=self.uuid)
+        db.session.add(self.test)
+        db.session.commit()
+        file = open(os.path.join(TESTS_PATH, self.uuid + ".json"), "w", encoding="utf8")
+        file.write("[]")
+        file.close()
+        print("saved")
+
+    def load(self, uuid: str):
         try:
             file = open(os.path.join(app.conifg["UPLOAD_FOLDER"], "tests", uuid + ".json"), "r")
         except FileNotFoundError:
@@ -37,8 +50,6 @@ class SHTest:
             self.uuid = uuid
             self.author = get_user(test["author"])
             self.tasks = test["tasks"]
-
-            #TODO: decode right asnwers only?
         except:
             raise TestDamagedException(uuid)
 
