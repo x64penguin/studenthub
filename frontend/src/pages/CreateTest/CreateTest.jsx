@@ -17,7 +17,7 @@ export function CreateTest() {
         if (!authenticated || currentUser.account_type == 0) {
             navigate("/login?redirect=/create");
         }
-    }, []);
+    }, [authenticated, currentUser]);
 
     const [ form, setForm ] = useState({
         name: "",
