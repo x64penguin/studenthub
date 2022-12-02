@@ -66,6 +66,10 @@ a {
     color: #424244;
 }
 
+.hidden {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .block-default {
         padding: 0.9rem;

@@ -70,6 +70,28 @@
     margin-left: auto;
 }
 
+.profile__created-test {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    margin: 0.7rem 0;
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    color: #000;
+}
+
+.profile__created-test > img {
+    height: 4rem;
+}
+
+.profile__created-test > .description {
+    margin-left: 2rem;
+}
+
+.profile__created-test > .description > h2 {
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+}
+
 @media (max-width: 768px) {
     .profile-page {
         width: 80%;
@@ -79,5 +101,13 @@
 @media (max-width: 576px) {
     .profile-page {
         width: 96%;
+    }
+
+    .profile__created-test {
+        padding: 0.5rem;
+    }
+
+    .profile__created-test > .description > h2 {
+        font-size: 1.2rem;
     }
 }

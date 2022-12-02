@@ -4,7 +4,7 @@ import { ErrorPage } from "../../components/ErrorPage/ErrorPage";
 import { Loading } from "../../components/Loading/Loading";
 import { api_get, getStaticFile } from "../../utils";
 import "./Profile.css";
-import { TabLabel, TabSwitch } from "../../components/TabSwitch/TabSwitch";
+import { cnTab, TabLabel, TabSwitch } from "../../components/TabSwitch/TabSwitch";
 import { SquareButton } from "../../components/Button/SquareButton";
 import settings_icon from "./settings_icon.svg";
 import { API_SERVER } from "../../config";
@@ -17,12 +17,13 @@ export function ProfilePage() {
     const [status, setStatus] = useState("loading");
     const currentUser = useSelector(selectUser);
     const navigate = useNavigate();
+    const [activeTab, setActiveTab] = useState("Пройденные тесты");
 
     useEffect(() => {
         api_get(
             "user/" + userId,
             (data) => {
-                if (data.response == "success") {
+                if (data.response === "success") {
                     setUser(data.user);
                     setStatus("success");
                 } else {
@@ -35,9 +36,9 @@ export function ProfilePage() {
         );
     }, []);
 
-    if (status == "loading") {
+    if (status === "loading") {
         return <Loading />;
-    } else if (status != "success") {
+    } else if (status !== "success") {
         return <ErrorPage error={status} />;
     }
 
@@ -68,16 +69,29 @@ export function ProfilePage() {
                 <ProfileStats label="Присоединился" stat={user.joined}/>
                 <ProfileStats label="Решено тестов" stat={256}/>
             </div>
-            <TabSwitch style="secondary" mode="horizontal" onChange={()=>{}}>
+            <TabSwitch style="secondary" mode="horizontal" onChange={n => setActiveTab(n)}>
                 <TabLabel>Пройденные тесты</TabLabel>
-                <TabLabel>Еще че то</TabLabel>                
+                <TabLabel>Созданные тесты</TabLabel>                
             </TabSwitch>
-            <div className="tab-content">
+            <div className={cnTab(activeTab === "Пройденные тесты")}>
 
             </div>
-            { user.id == currentUser.id ? 
+            <div className={cnTab(activeTab === "Созданные тесты")}>
+                {
+                    currentUser.tests_created.map(test => {
+                        return <a href={"/test/" + test.id + "/edit"} className="profile__created-test">
+                            <img alt="icon" src={`${API_SERVER}/static/test_icon/${test.id}`}/>
+                            <div className="description">
+                                <h2>{test.name}</h2>
+                                <span>{test.description}</span>
+                            </div>
+                        </a>
+                    })
+                }
+            </div>
+            { user.id === currentUser.id ?
             <SquareButton className="edit-profile-btn" onClick={() => navigate(`/user/${userId}/edit`)}>
-                <img src={settings_icon}/>
+                <img alt="settings icon" src={settings_icon}/>
             </SquareButton> : undefined
             }
         </div>

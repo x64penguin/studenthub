@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../store/User/selectors";
-import { TabSwitch, TabLabel } from "../../components/TabSwitch/TabSwitch";
+import { TabSwitch, TabLabel, cnTab } from "../../components/TabSwitch/TabSwitch";
 import "./ProfileSettings.css";
 import classNames from "classnames";
 import { useState } from "react";
@@ -77,7 +77,7 @@ export function ProfileSettings(props) {
                 <TabLabel>Безопасность</TabLabel>
             </TabSwitch>
 
-            <div className={classNames({"tab-content": true, "hidden": activeTab != "Основные"})}>
+            <div className={cnTab(activeTab == "Основные")}>
                 <form onSubmit={formSubmit}>
                     <FileInput
                         label="Аватар"
@@ -102,7 +102,7 @@ export function ProfileSettings(props) {
                     </div>
                 </form>
             </div>
-            <div className={classNames({"tab-content": true, "hidden": activeTab != "Безопасность"})}>
+            <div className={cnTab(activeTab == "Безопасность")}>
                 <h2 className="section-header">Активные сессии</h2>
                 {
                     currentUser.sessions.map((session, index)=> {

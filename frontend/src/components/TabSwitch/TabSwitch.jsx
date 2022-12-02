@@ -51,3 +51,11 @@ export function TabSwitch(props) {
         </div>
     );
 }
+
+
+export function cnTab(active) {
+    return classNames({
+        "tab-content": true,
+        "hidden": !active
+    })
+}
