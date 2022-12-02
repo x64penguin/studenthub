@@ -6,7 +6,7 @@ from flask import request, send_file, Response
 from models import get_user, User, UserSession, Test
 from authorization import get_current_user, login_required, login_user, logout_user
 from PIL import Image
-from shtest import SHTest
+from shtest import SHTest, TESTS_PATH
 
 
 @app.route("/api/validate_username", methods=["POST"])
@@ -150,7 +150,31 @@ def api_create_test(user):
         "test": test.test.id
     }
 
-    
+
+@app.route("/static/test_icon/<int:tid>")
+def test_icon(tid):
+    test = Test.query.filter_by(id=tid).first()
+
+    if test is None:
+        return {"response": 404}, 404
+
+    if test.avatar is not None:
+        return send_file(os.path.join(TESTS_PATH, test.uuid + test.avatar))
+
+    return send_file(os.path.join(TESTS_PATH, ".default.svg"))
+
+@app.route("/api/test/<int:test_id>")
+def get_test(test_id):
+    test = Test.query.filter_by(id=test_id).first()
+
+    if test is None:
+        return {
+            "response": 404
+        }, 404
+
+    return test.json()
+
+
 @app.after_request
 def add_header(response: Response):
     response.headers['Access-Control-Allow-Origin'] = '*'

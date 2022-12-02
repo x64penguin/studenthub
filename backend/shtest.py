@@ -1,4 +1,4 @@
-from models import User, Test, get_user
+from models import User, Test, get_user, TESTS_PATH
 from werkzeug.datastructures import FileStorage
 from uuid import uuid4
 from app import app, db
@@ -10,10 +10,6 @@ class TestNotFoundException(Exception):
 
 class TestDamagedException(Exception):
     pass
-
-
-TESTS_PATH = os.path.join(app.config["UPLOAD_FOLDER"], "tests")
-
 
 class SHTest:
     def __init__(self, author: User, name: str, description: str, image: FileStorage | None = None):
