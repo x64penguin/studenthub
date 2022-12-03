@@ -1,6 +1,6 @@
 .input-default {
     display: block;
-    font-family: "Roboto";
+    font-family: "Roboto", sans-serif;
     padding: 0.65rem;
     border: none;
     outline: none;
@@ -17,5 +17,5 @@
 
 .input-default.invalid {
     background-color: rgb(255, 215, 215)!important;
-    box-shadow: 0 0 0px 1px #FF0000!important;
+    box-shadow: 0 0 0 1px #FF0000!important;
 }

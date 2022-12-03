@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorPage } from "../../components/ErrorPage/ErrorPage";
 import { Loading } from "../../components/Loading/Loading";
-import { api_get, getStaticFile } from "../../utils";
+import { api_get } from "../../utils";
 import "./Profile.css";
 import { cnTab, TabLabel, TabSwitch } from "../../components/TabSwitch/TabSwitch";
 import { SquareButton } from "../../components/Button/SquareButton";
@@ -20,21 +20,15 @@ export function ProfilePage() {
     const [activeTab, setActiveTab] = useState("Пройденные тесты");
 
     useEffect(() => {
-        api_get(
-            "user/" + userId,
-            (data) => {
-                if (data.response === "success") {
-                    setUser(data.user);
-                    setStatus("success");
-                } else {
-                    setStatus(data.response);
-                }
-            },
-            (error) => {
-                setStatus("404");
+        api_get("user/" + userId, (data) => {
+            if (data.response === "success") {
+                setUser(data.user);
+                setStatus("success");
+            } else {
+                setStatus(data.response);
             }
-        );
-    }, []);
+        });
+    }, [setUser, setStatus, userId]);
 
     if (status === "loading") {
         return <Loading />;

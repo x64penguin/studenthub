@@ -1,6 +1,7 @@
 .tab-switch {
-    padding: 6px;
+    padding: 10px;
     width: fit-content;
+    height: fit-content;
 }
 
 /* .tab-switch.secondary {
@@ -20,7 +21,7 @@
 }
 
 .tab-switch__label {
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 0.3rem 0.6rem;
     color: var(--text-main);
     display: block;

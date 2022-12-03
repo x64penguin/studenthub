@@ -1,3 +1,5 @@
+import uuid
+
 from app import app, db
 import os
 import utils
@@ -141,9 +143,10 @@ def api_create_test(user):
     data = request.form
     try:
         image = request.files["avatar"]
-    except:
+    except KeyError:
         image = None
-    test = SHTest(user, data["name"], data["description"], image)
+    test = Test(name=data["name"], description=data["description"], author_id=user.id, uuid=uuid.uuid4().hex)
+
 
     return {
         "response": "success",
@@ -163,16 +166,37 @@ def test_icon(tid):
 
     return send_file(os.path.join(TESTS_PATH, ".default.svg"))
 
+
 @app.route("/api/test/<int:test_id>")
 def get_test(test_id):
-    test = Test.query.filter_by(id=test_id).first()
+    test: Test = Test.query.filter_by(id=test_id).first()
+    current_user = get_current_user()
 
     if test is None:
         return {
             "response": 404
         }, 404
 
-    return test.json()
+    if current_user.id == test.author_id:
+        return test.safe_json(), 200
+    return test.json(), 200
+
+
+@app.route("/api/edit_test/<int:test_id>", methods=["POST"])
+@login_required
+def edit_test(user, test_id):
+    test = Test.query.filter_by(id=test_id).first()
+    if test is None:
+        return {"response", 404}, 404
+
+    if user.id != test.author_id:
+        return {"response", "unauthorized"}, 401
+
+    test.name = request.form["name"]
+    test.description = request.form["description"]
+
+    if len(request.files) != 0:
+        ...  #TODO: upload image
 
 
 @app.after_request

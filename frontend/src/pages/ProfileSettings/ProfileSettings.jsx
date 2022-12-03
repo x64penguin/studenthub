@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../store/User/selectors";
 import { TabSwitch, TabLabel, cnTab } from "../../components/TabSwitch/TabSwitch";
 import "./ProfileSettings.css";
-import classNames from "classnames";
 import { useState } from "react";
 import { Input } from "../../components/Input/Input";
 import { FileInput } from "../../components/FileInput/FileInput";
@@ -20,7 +19,7 @@ function SecuritySession(props) {
     } = props;
 
     return <div className="security__session">
-        <img src={device=="Desktop" ? 
+        <img alt="device icon" src={device === "Desktop" ?
             "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_desktop_windows_48px-256.png" :
             "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_tablet_mac_48px-256.png"}/>
         <div className="device-info">
@@ -32,7 +31,7 @@ function SecuritySession(props) {
     </div>;
 }
 
-export function ProfileSettings(props) {
+export function ProfileSettings() {
     const { userId } = useParams();
     const currentUser = useSelector(selectUser);
     const [activeTab, setActiveTab] = useState("Основные");
@@ -45,7 +44,7 @@ export function ProfileSettings(props) {
 
     const redirectToUser = () => navigate(`/user/${userId}`);
 
-    if (currentUser.id != userId) {
+    if (currentUser.id !== userId) {
         return redirectToUser();
     }
 
@@ -77,7 +76,7 @@ export function ProfileSettings(props) {
                 <TabLabel>Безопасность</TabLabel>
             </TabSwitch>
 
-            <div className={cnTab(activeTab == "Основные")}>
+            <div className={cnTab(activeTab === "Основные")}>
                 <form onSubmit={formSubmit}>
                     <FileInput
                         label="Аватар"
@@ -91,7 +90,7 @@ export function ProfileSettings(props) {
                         label="Почта"
                         name="email"
                         value={form.email}
-                        invalid={form.email.search("@") == -1}
+                        invalid={form.email.search("@") === -1}
                         onChange={(event) =>
                             setForm({ ...form, email: event.target.value })
                         }
@@ -102,7 +101,7 @@ export function ProfileSettings(props) {
                     </div>
                 </form>
             </div>
-            <div className={cnTab(activeTab == "Безопасность")}>
+            <div className={cnTab(activeTab === "Безопасность")}>
                 <h2 className="section-header">Активные сессии</h2>
                 {
                     currentUser.sessions.map((session, index)=> {

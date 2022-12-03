@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 
 def login_required(f):
     @wraps(f)
-
     def decorated(*args, **kwargs):
         session: UserSession = UserSession.query.filter_by(ip=request.remote_addr).first()
 

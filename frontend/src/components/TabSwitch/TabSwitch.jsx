@@ -7,7 +7,7 @@ export function TabLabel({ onClick, children, active, style }) {
     const classes = classNames({
         controls: true,
         "tab-switch__label": true,
-        "secondary": style == "secondary",
+        "secondary": style === "secondary",
         active: active,
     });
     return (
@@ -26,8 +26,8 @@ export function TabSwitch(props) {
     const classes = classNames({
         "block-default": true,
         "tab-switch": true,
-        "horizontal": mode == "horizontal",
-        "secondary": style == "secondary"
+        "horizontal": mode === "horizontal",
+        "secondary": style === "secondary"
     });
 
     return (
@@ -37,7 +37,7 @@ export function TabSwitch(props) {
                     <TabLabel
                         key={index}
                         style={style}
-                        active={tab.props.children == active}
+                        active={tab.props.children === active}
                         onClick={() => {
                             const newActive= tab.props.children;
                             setActive(newActive);

@@ -3,7 +3,7 @@
     cursor: pointer;
     border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: var(--border-radius);
-    font-family: "Roboto";
+    font-family: "Roboto", sans-serif;
 }
 
 .file-input::-webkit-file-upload-button {

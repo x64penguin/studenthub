@@ -1,0 +1,38 @@
+.test-edit__page {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.test-dashboard {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.test-dashboard > .dashboard-content {
+    width: 100%;
+    height: fit-content;
+}
+
+.test-edit__title {
+    padding: 1rem;
+    display: flex;
+}
+
+.test-edit__title > img {
+    height: 4rem;
+}
+
+.test-edit__title > .test-name {
+    width: 50%;
+    margin: auto;
+}
+
+.dashboard-content > .tab-content > .input-group:nth-child(1) > label {
+    margin-top: 0!important;
+}
+
+.dashboard-content .submit {
+    margin-top: var(--default-margin);
+    margin-left: auto;
+}

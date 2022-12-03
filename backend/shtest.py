@@ -5,48 +5,36 @@ from app import app, db
 
 import os, json
 
+
 class TestNotFoundException(Exception):
     pass
+
 
 class TestDamagedException(Exception):
     pass
 
+
 class SHTest:
-    def __init__(self, author: User, name: str, description: str, image: FileStorage | None = None):
-        self.name = name
-        self.description = description
-        self.uuid = uuid4().hex
-        self.author = author
+    def __init__(self, test: Test):
+        self.name = test.name
+        self.description = test.description
+        self.uuid = test.uuid
+        self.author = User.query.filter_by(id=test.author_id).first()
+        self.test = test
 
-        print(image)
-
-        if image is not None:
-            ext = image.filename.split('.')[-1]
-            image.save(os.path.join(TESTS_PATH, f"{self.uuid}.{ext}"))
-
-        self.test = Test(name=name, author_id=author.id, description=description, uuid=self.uuid)
-        db.session.add(self.test)
-        db.session.commit()
-        file = open(os.path.join(TESTS_PATH, self.uuid + ".json"), "w", encoding="utf8")
-        file.write("[]")
-        file.close()
-        print("saved")
-
-    def load(self, uuid: str):
         try:
-            file = open(os.path.join(app.conifg["UPLOAD_FOLDER"], "tests", uuid + ".json"), "r")
+            file = open(os.path.join(app.conifg["UPLOAD_FOLDER"], "tests", self.uuid + ".json"), "r")
         except FileNotFoundError:
-            raise TestNotFoundException(uuid)
+            raise TestNotFoundException(self.uuid)
 
+        self.tasks = json.loads(file.read())
+
+    def change_image(self, image: FileStorage):
         try:
-            test = json.dumps(file.read())
+            file = open(os.path.join(app.conifg["UPLOAD_FOLDER"], "tests", self.uuid + "." + self.test.avatar), "r")
+            os.remove(file.name)
+        except FileNotFoundError:
+            pass  # nothing to delete
 
-            self.name = test["name"]
-            self.description = test["description"]
-            self.uuid = uuid
-            self.author = get_user(test["author"])
-            self.tasks = test["tasks"]
-        except:
-            raise TestDamagedException(uuid)
-
-        file.close()
+        ext = image.filename.split(".")[-1]
+        image.save(os.path.join(app.conifg["UPLOAD_FOLDER"], "tests", self.uuid + "." + ext))

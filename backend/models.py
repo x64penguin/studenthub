@@ -1,3 +1,5 @@
+import json
+
 from sqlalchemy import func, select
 from sqlalchemy.orm import column_property
 
@@ -95,7 +97,8 @@ class Test(db.Model):
     avatar = db.Column(db.String(8), default=None)
 
     def json(self):
-        tasks = open(os.path.join(TESTS_PATH, self.uuid + ".json"), "r", encoding="utf8")
+        with open(os.path.join(TESTS_PATH, self.uuid + ".json"), "r", encoding="utf8") as tasks_file:
+            tasks = json.loads(tasks_file.read())
 
         return {
             "id": self.id,
@@ -103,5 +106,10 @@ class Test(db.Model):
             "description": self.description,
             "author": self.author_id,
             "uuid": self.uuid,
-            "tasks": self.tasks
+            "tasks": tasks
         }
+
+    def safe_json(self):
+        base_json = self.json()
+
+        return base_json

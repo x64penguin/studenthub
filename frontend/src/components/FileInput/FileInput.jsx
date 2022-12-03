@@ -7,7 +7,7 @@ export function FileInput(props) {
         return (
             <input
                 type="file"
-                className={"file-input" + className}
+                className={"file-input " + className}
                 onChange={onChange}
                 accept={accept}
                 id={name}
@@ -15,7 +15,7 @@ export function FileInput(props) {
         );
     } else {
         return (
-            <div className={"input-group" + className}>
+            <div className={"input-group " + className}>
                 <label>{label}</label>
                 <input
                     type="file"
