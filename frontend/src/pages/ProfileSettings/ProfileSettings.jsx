@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../store/User/selectors";
 import { TabSwitch, TabLabel, cnTab } from "../../components/TabSwitch/TabSwitch";
 import "./ProfileSettings.css";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { Input } from "../../components/Input/Input";
 import { FileInput } from "../../components/FileInput/FileInput";
 import { Button } from "../../components/Button/Button";
@@ -44,9 +44,11 @@ export function ProfileSettings() {
 
     const redirectToUser = () => navigate(`/user/${userId}`);
 
-    if (currentUser.id !== userId) {
-        return redirectToUser();
-    }
+    useEffect(() => {
+        if (currentUser.id != userId) {
+            return redirectToUser();
+        }
+    }, [redirectToUser]);
 
     const formSubmit = (event) => {
         event.preventDefault();

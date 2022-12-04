@@ -50,11 +50,7 @@ class User(UserMixin, db.Model):
         base_json["tests_created"] = []
 
         for test in self.tests_created:
-            base_json["tests_created"].append({
-                "id": test.id,
-                "name": test.name,
-                "description": test.description
-            })
+            base_json["tests_created"].append(test.json())
         return base_json
 
     def json(self) -> dict:

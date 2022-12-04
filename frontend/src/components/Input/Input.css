@@ -4,6 +4,7 @@
     padding: 0.65rem;
     border: none;
     outline: none;
+    resize: none;
     background: var(--background-secondary);
     border-radius: var(--border-radius);
     transition: box-shadow .25s, background .25s;

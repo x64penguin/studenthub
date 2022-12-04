@@ -1,15 +1,16 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { ErrorPage } from "../../components/ErrorPage/ErrorPage";
-import { Loading } from "../../components/Loading/Loading";
-import { api_get } from "../../utils";
+import {useEffect, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
+import {ErrorPage} from "../../components/ErrorPage/ErrorPage";
+import {Loading} from "../../components/Loading/Loading";
+import {api_get} from "../../utils";
 import "./Profile.css";
-import { cnTab, TabLabel, TabSwitch } from "../../components/TabSwitch/TabSwitch";
-import { SquareButton } from "../../components/Button/SquareButton";
+import {cnTab, TabLabel, TabSwitch} from "../../components/TabSwitch/TabSwitch";
+import {SquareButton} from "../../components/Button/SquareButton";
 import settings_icon from "./settings_icon.svg";
-import { API_SERVER } from "../../config";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../store/User/selectors";
+import {API_SERVER} from "../../config";
+import {useSelector} from "react-redux";
+import {selectUser} from "../../store/User/selectors";
+import {LinkButton} from "../../components/Button/LinkButton";
 
 export function ProfilePage() {
     const { userId } = useParams();
@@ -43,8 +44,27 @@ export function ProfilePage() {
         </>
     }
 
+    const renderTestCard = (test) => {
+        console.log(test);
+        return <div className="profile__created-test">
+            <img alt="icon" src={`${API_SERVER}/static/test_icon/${test.id}`}/>
+            <div className="description">
+                <h2>{test.name}</h2>
+                <span>{test.description}</span>
+            </div>
+            {
+                test.author === currentUser.id ?
+                    <LinkButton
+                        link={"/test/" + test.id + "/edit"}
+                        className="created-test__button">
+                            Редактировать
+                    </LinkButton> : undefined
+            }
+        </div>
+    }
+
     return (
-        <div className="block-default profile-page">
+        <div className="block-default profile-page mx-a">
             <div className="profile-page__header">
                 <img
                     src={`${API_SERVER}/static/avatar/${user.id}`}
@@ -72,21 +92,13 @@ export function ProfilePage() {
             </div>
             <div className={cnTab(activeTab === "Созданные тесты")}>
                 {
-                    currentUser.tests_created.map(test => {
-                        return <a href={"/test/" + test.id + "/edit"} className="profile__created-test">
-                            <img alt="icon" src={`${API_SERVER}/static/test_icon/${test.id}`}/>
-                            <div className="description">
-                                <h2>{test.name}</h2>
-                                <span>{test.description}</span>
-                            </div>
-                        </a>
-                    })
+                    currentUser.tests_created.map(renderTestCard)
                 }
             </div>
             { user.id === currentUser.id ?
-            <SquareButton className="edit-profile-btn" onClick={() => navigate(`/user/${userId}/edit`)}>
-                <img alt="settings icon" src={settings_icon}/>
-            </SquareButton> : undefined
+                <SquareButton className="edit-profile-btn" onClick={() => navigate(`/user/${userId}/edit`)}>
+                    <img alt="settings icon" src={settings_icon}/>
+                </SquareButton> : undefined
             }
         </div>
     );

@@ -20,7 +20,10 @@
 }
 
 .test-edit__title > img {
+    width: 4rem;
     height: 4rem;
+    border-radius: 6px;
+    object-fit: cover;
 }
 
 .test-edit__title > .test-name {
@@ -35,4 +38,10 @@
 .dashboard-content .submit {
     margin-top: var(--default-margin);
     margin-left: auto;
+}
+
+@media (max-width: 768px) {
+    .test-edit__page {
+        width: 95%;
+    }
 }

@@ -7,10 +7,14 @@ import {cnTab, TabLabel, TabSwitch} from "../../components/TabSwitch/TabSwitch";
 import {Input} from "../../components/Input/Input";
 import {FileInput} from "../../components/FileInput/FileInput";
 import {Button} from "../../components/Button/Button";
+import {TasksEditPage} from "./TasksEditPage";
+import {useSelector} from "react-redux";
+import {selectUser} from "../../store/User/selectors";
 
 export function TestEdit() {
     const { testId } = useParams();
     const navigate = useNavigate();
+    const currentUser = useSelector(selectUser);
     const [ test, setTest ] = useState(null);
     const [ currentTab, setCurrentTab ] = useState("Основные");
 
@@ -32,6 +36,10 @@ export function TestEdit() {
 
     if (test === null) {
         return <Loading/>;
+    }
+
+    if (currentUser.id !== test.author) {
+        navigate("/test/" + testId);
     }
 
     const changeImage = (e) => {
@@ -67,6 +75,9 @@ export function TestEdit() {
                     <Input label="Описание" value={form.description}/>
                     <FileInput label="Картинка" onChange={changeImage}/>
                     <Button className="submit" onClick={saveChanges}>Сохранить</Button>
+                </div>
+                <div className={cnTab(currentTab === "Задания")}>
+                    <TasksEditPage test={test}/>
                 </div>
             </div>
         </div>

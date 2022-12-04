@@ -9,8 +9,7 @@ export function Input(props) {
         type = "text",
         value = "",
         className = "",
-        onChange,
-        name,
+        onChange
     } = props;
 
     const classes = classnames({
@@ -26,7 +25,6 @@ export function Input(props) {
                 placeholder={placeholder}
                 onChange={onChange}
                 defaultValue={value || ""}
-                id={name}
             />
         );
     } else {
@@ -39,7 +37,6 @@ export function Input(props) {
                     placeholder={placeholder}
                     onChange={onChange}
                     defaultValue={value || ""}
-                    id={name}
                 />
             </div>
         );

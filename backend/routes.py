@@ -177,7 +177,7 @@ def get_test(test_id):
             "response": 404
         }, 404
 
-    if current_user.id == test.author_id:
+    if current_user is not None and current_user.id == test.author_id:
         return test.safe_json(), 200
     return test.json(), 200
 
@@ -197,6 +197,8 @@ def edit_test(user, test_id):
 
     if len(request.files) != 0:
         ...  #TODO: upload image
+
+    return {"response": "success"}, 200
 
 
 @app.after_request

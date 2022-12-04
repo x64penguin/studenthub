@@ -1,0 +1,49 @@
+.popup {
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+    background-color: rgba(255, 255, 255, 0.5)!important;
+    backdrop-filter: blur(10px);
+    transition: opacity .25s;
+    position: absolute;
+    z-index: 1;
+}
+
+.popup_hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.popup__header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.popup__header > h3 {
+    margin: 0;
+    color: var(--text-main);
+}
+
+.popup__header > button {
+    padding: 0;
+    width: 1rem;
+    height: 1rem;
+    margin: auto 0 auto 1rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.popup__header > button > img {
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    padding: 0;
+}
+
+.popup__container {
+    max-height: 20vh;
+    margin-top: 1.5rem;
+    padding: 0.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}

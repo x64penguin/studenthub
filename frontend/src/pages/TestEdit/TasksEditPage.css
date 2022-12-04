@@ -1,0 +1,55 @@
+.task-selector_edit {
+    background-color: var(--controls-primary);
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1.5rem;
+    transition: background-color .25s;
+    border: none;
+    outline: none;
+    color: #FFF;
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.task-selector_edit.active,
+.task-selector_edit:hover {
+    background-color: var(--controls-primary-hovered);
+}
+
+.task-bar {
+    width: fit-content;
+    max-width: 100%;
+}
+
+.main-task-area {
+    height: 30vh;
+    margin-top: var(--default-margin);
+}
+
+.task-edit__form {
+    position: relative;
+}
+
+.buttons-row {
+    display: flex;
+    margin-top: var(--default-margin);
+    width: 100%;
+    justify-content: space-between;
+}
+
+.element-selector {
+    bottom: 4rem;
+}
+
+.element-selector .question-element-selector {
+    font-weight: 400;
+    color: #3F3F3F;
+    display: block;
+    margin-top: 0.5rem;
+    cursor: pointer;
+}
+
+.element-selector .question-element-selector:nth-child(1) {
+    margin-top: 0;
+}

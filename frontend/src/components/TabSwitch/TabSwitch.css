@@ -4,16 +4,8 @@
     height: fit-content;
 }
 
-/* .tab-switch.secondary {
+.tab-switch.secondary {
     background-color: #EFEFEF;
-    padding: 4px;
-    border-radius: 14px;
-    margin-left: auto;
-    margin-right: auto;
-} */
-
-.tab-switch.secondary { 
-    background-color: var(--controls-primary);
     padding: 4px;
     border-radius: 14px;
     margin-left: auto;
@@ -38,21 +30,12 @@
     background-color: #FFF;
 }
 
-.tab-switch__label.secondary {
-    border-radius: 10px;
-    color: #FFF;
-}
-
 .tab-switch__label.active:not(.secondary):hover {
     background-color: var(--controls-primary-hovered)!important;
 }
 
 .tab-switch__label:not(.active):hover {
     background-color: #EFEFEF;
-}
-
-.tab-switch__label.secondary:not(.active):hover {
-    background-color: var(--controls-primary)!important;
 }
 
 .tab-switch.horizontal {

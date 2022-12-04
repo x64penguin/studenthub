@@ -1,7 +1,5 @@
 .profile-page {
     width: 50%;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .profile-page__header {
@@ -81,6 +79,9 @@
 
 .profile__created-test > img {
     height: 4rem;
+    width: 4rem;
+    border-radius: 6px;
+    object-fit: cover;
 }
 
 .profile__created-test > .description {
@@ -90,6 +91,11 @@
 .profile__created-test > .description > h2 {
     margin-top: 0;
     margin-bottom: 0.25rem;
+}
+
+.created-test__button {
+    margin-top: auto;
+    margin-left: auto;
 }
 
 @media (max-width: 768px) {
