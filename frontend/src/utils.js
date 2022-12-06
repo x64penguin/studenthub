@@ -68,3 +68,12 @@ export async function async_api_post(api, body, errorCallback) {
 export function staticFile(file) {
     return API_SERVER + "/static/" + file;
 }
+
+export function replaceObject(arr, setArr, index, obj) {
+    setArr(arr.map((el, idx) => {
+        if (idx === index) {
+            return obj;
+        }
+        return el;
+    }))
+}

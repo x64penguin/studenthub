@@ -1,48 +1,79 @@
-import {v4 as uuid} from "uuid";
+import {parse, v4 as uuid} from "uuid";
+
+function parseTaskElements(str) {
+    const regex = /$[[^]]]/g;
+    const matches = str.match(regex);
+
+    if (!matches) {
+        return [];
+    }
+
+    let parsedValues = [];
+
+    for (let i = 0; i < matches.length; i++) {
+        const value = matches[i].slice(2, -1);
+        const index = str.indexOf(matches[i]);
+
+        parsedValues.push({ value, index });
+    }
+
+    return parsedValues;
+}
 
 export function generateTask(rawText, elements) {
+    let elementNames = parseTaskElements(rawText);
     let task = [];
-    let cursorPosition = rawText.indexOf("$[");
+    let startIndex = 0;
 
-    task.push(rawText.slice(0, cursorPosition === -1 ? undefined : cursorPosition));
+    for (let i = 0; i < elementNames.length; i++) {
+        const name = elementNames[i];
+        const substring = rawText.substring(startIndex, name.index);
 
-    while (cursorPosition !== -1) {
-        const endPosition = rawText.indexOf("]", cursorPosition);
-        if (endPosition === -1) {
-            return ["Что-то пошло не так: не закрыто \"$[\""];
-        }
-        const elementId = rawText.slice(cursorPosition, endPosition);
-        const element = elements[elementId];
+        task.push(substring);
+        task.push(elements[name.value]);
 
-        if (element === undefined) {
-            task.push("Элемент с id " + elementId + " не найден, удалите его и создайте заного");
-        } else {
-            task.push(element);
-        }
-
-        cursorPosition = rawText.indexOf("$[", cursorPosition);
-
-        task.push(rawText.slice(endPosition, cursorPosition === -1 ? undefined : cursorPosition))
+        startIndex = name.index + name.value.length + 3;
     }
 
     return task;
 }
 
 export function createBaseQuestion(type) {
+    const id = uuid();
+    const baseQuestion = {
+        name: id,
+        inline: false,
+    }
     switch (type) {
         case "Ввод":
             return {
+                ...baseQuestion,
                 qtype: "input",
-                name: uuid(),
                 type: "str",
                 right: ""
             }
-        case "Внутристрочный ввод":
+        case "Выбор":
             return {
-                qtype: "inline input",
-                name: uuid(),
-                type: "str",
-                right: ""
+                ...baseQuestion,
+                qtype: "select",
+                multiselect: false,
+                variants: [],
+                right: [],
+            }
+        case "Последовательность":
+            return {
+                ...baseQuestion,
+                qtype: "order",
+                variants: [],
+                right: []
+            }
+        case "Связка":
+            return {
+                ...baseQuestion,
+                qtype: "connect",
+                variants_l: [],
+                variants_r: [],
+                right: [],
             }
     }
 }

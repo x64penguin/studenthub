@@ -3,17 +3,21 @@
     width: 3rem;
     height: 3rem;
     border-radius: 1.5rem;
-    transition: background-color .25s;
+    transition: background-color .25s, box-shadow .25s;
     border: none;
     outline: none;
     color: #FFF;
     font-size: 1.5rem;
     font-weight: 600;
     cursor: pointer;
+    margin: 0 0.25rem;
 }
 
-.task-selector_edit.active,
-.task-selector_edit:hover {
+.task-selector_edit.active {
+    background-color: rgb(50, 162, 250);
+    box-shadow: 0 0 25px rgba(17, 112, 218, 0.25);
+}
+.task-selector_edit:hover:not(.active) {
     background-color: var(--controls-primary-hovered);
 }
 
@@ -38,7 +42,8 @@
     justify-content: space-between;
 }
 
-.element-selector {
+.element-selector,
+.element-editor {
     bottom: 4rem;
 }
 
