@@ -4,8 +4,10 @@ import classNames from "classnames";
 import {Button} from "../../components/Button/Button";
 import {TaskView} from "../../components/TaskView/TaskView";
 import {Popup} from "../../components/Popup/Popup";
-import {createBaseQuestion} from "../../components/TaskView/taskUtils";
+import {createBaseQuestion, replaceQuestion} from "../../components/TaskView/taskUtils";
 import {replaceObject} from "../../utils";
+import {Input} from "../../components/Input/Input";
+import {Checkbox} from "../../components/Checkbox/Checkbox";
 
 export function TasksEditPage(props) {
     const {
@@ -16,7 +18,7 @@ export function TasksEditPage(props) {
     const [elementSelectorOpened, setElementSelectorOpened] = useState(false);
     const [elementListOpened, setElementListOpened] = useState(false);
     const [elementEditorOpened, setElementEditorOpened] = useState(false);
-    const [editingElementName, setEditingElementName] = useState("");
+    const [editingElement, setEditingElement] = useState(undefined);
 
     const [textAreaValue, setTextAreaValue] = useState("");
     const textAreaRef = useRef(null);
@@ -37,7 +39,8 @@ export function TasksEditPage(props) {
         replaceObject(tasks, setTasks, activeTask, {
             ...tasks[activeTask], elements: [...tasks[activeTask].elements, el]
         });
-        setElementListOpened(true);
+        setEditingElement(el);
+        setElementEditorOpened(true);
     }
 
     const QuestionElement = ({label}) => {
@@ -92,7 +95,7 @@ export function TasksEditPage(props) {
             </div>
             <div className="buttons-row">
                 <Button style="secondary" onClick={() => setElementSelectorOpened(true)}>Добавить элемент</Button>
-                <Button style="secondary">Редактировать элемент</Button>
+                <Button style="secondary" onClick={() => setElementListOpened(true)}>Редактировать элемент</Button>
                 <Button style="secondary">Удалить</Button>
                 <Button>Сохранить</Button>
             </div>
@@ -110,8 +113,8 @@ export function TasksEditPage(props) {
             <Popup
                 opened={elementListOpened}
                 onClose={() => setElementListOpened(false)}
-                label="Редактировать эелемент"
-                className="element-editor"
+                label="Элементы"
+                className="element-editor-list"
             >
                 {
                     (() => {
@@ -122,14 +125,75 @@ export function TasksEditPage(props) {
                         return tasks[activeTask].elements.map(el => {
                             return <span onClick={() => {
                                 setElementEditorOpened(true);
-                                setEditingElementName(el.name);
-                            }}></span>
+                                setElementListOpened(false);
+                                setEditingElement(el);
+                            }}>{el.name}</span>
                         })
                     })()
                 }
             </Popup>
+            <Popup
+                opened={elementEditorOpened}
+                onClose={() => setElementEditorOpened(false)}
+                label="Редактировать элемент"
+                className="element-editor"
+            >
+                <ElementEditor
+                    element={editingElement}
+                    onSave={(newElement) => {
+                        setElementEditorOpened(false);
+                        replaceObject(tasks, setTasks, activeTask, {
+                            ...tasks[activeTask], elements: replaceQuestion(tasks[activeTask].elements, editingElement.name, newElement)
+                        });
+                    }}
+                />
+            </Popup>
         </div>
     </div>
+}
+
+function ElementEditor({ element, onSave, validator }) {
+    const [editedElement, setEditedElement] = useState(element);
+
+    if (editedElement === undefined && element !== undefined) {
+        setEditedElement(element);
+    }
+
+    if (element === undefined) {
+        return;
+    }
+
+    const nameEdit = <Input
+        label="Название"
+        invalid={validator}
+        value={element.name}
+        onChange={e => setEditedElement({...editedElement, name: e.target.value})}
+    />;
+
+    const inlineMode = <Checkbox
+        onChange={e => setEditedElement({...editedElement, inline: e})}
+    >
+        Внутристрочный
+    </Checkbox>;
+
+    const result = [nameEdit];
+
+    switch (element.qtype) {
+        case "input":
+            result.push(inlineMode);
+            result.push(<Input
+                label="Правильный ответ"
+                value={element.right}
+                onChange={e => setEditedElement({...editedElement, right: e.target.value})}
+            />);
+            break;
+        default:
+            // TODO: make variant adder for others
+            break;
+    }
+
+    result.push(<Button onClick={() => onSave(editedElement)}>Сохранить</Button>);
+    return result;
 }
 
 function insertIntoText(text, s, e, v) {

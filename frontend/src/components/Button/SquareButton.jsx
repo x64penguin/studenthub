@@ -7,7 +7,7 @@ export function SquareButton(props) {
         onClick
     } = props;
 
-    return <button className={"controls square-button" + " " + className} onClick={onClick}>
+    return <button className={"controls square-button " + className} onClick={onClick}>
         { children }
     </button>
 }

@@ -43,11 +43,12 @@
 }
 
 .element-selector,
-.element-editor {
+.element-editor-list {
     bottom: 4rem;
 }
 
-.element-selector .question-element-selector {
+.element-selector .question-element-selector,
+.element-editor-list span {
     font-weight: 400;
     color: #3F3F3F;
     display: block;
@@ -56,5 +57,23 @@
 }
 
 .element-selector .question-element-selector:nth-child(1) {
+    margin-top: 0;
+}
+
+.element-editor-list {
+    left: 30%;
+}
+
+.element-editor {
+    left: 30%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.element-editor .button {
+    margin-top: var(--default-margin);
+}
+
+.element-editor .input-group:nth-child(1) > label {
     margin-top: 0;
 }

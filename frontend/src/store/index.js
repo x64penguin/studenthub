@@ -1,4 +1,4 @@
-import { combineReducers, combineReducersm, configureStore, getDefaultMiddleware } from "@reduxjs/toolkit"
+import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import { userSlice } from "./User"
 
 export const store = configureStore({

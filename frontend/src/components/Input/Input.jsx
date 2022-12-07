@@ -14,7 +14,7 @@ export function Input(props) {
 
     const classes = classnames({
         "input-default": true,
-        invalid: invalid,
+        invalid: typeof invalid === "boolean" ? invalid : invalid(),
     });
 
     if (!label) {

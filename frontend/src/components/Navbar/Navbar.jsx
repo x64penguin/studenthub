@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, selectUserAuthenticated } from "../../store/User/selectors";
 import { DropdownItem, Dropdown } from "../Dropdown/Dropdown";
-import { Link, redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import menu_icon from "./menu.svg";
 import "./Navbar.css";
 import { api_get } from "../../utils";
@@ -61,7 +61,7 @@ function Profile() {
         return <div className="profile__wrapper">
             <div className="profile" onClick={() => setOpened(!opened)}>
                 <span className="profile__name">{user.username}</span>
-                <img src={`${API_SERVER}/static/avatar/${user.id}`}/>
+                <img alt="avatar" src={`${API_SERVER}/static/avatar/${user.id}`}/>
             </div>
 
             <Dropdown onClick={closeMenu} opened={opened}>

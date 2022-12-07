@@ -42,9 +42,18 @@
 }
 
 .popup__container {
-    max-height: 20vh;
+    max-height: 30vh;
     margin-top: 1.5rem;
     padding: 0.5rem;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    overflow: auto;
+}
+
+.popup__container::-webkit-scrollbar-button {
+    display: none;
+}
+
+.popup__container::-webkit-scrollbar-thumb {
+    border-radius: 4px;
 }

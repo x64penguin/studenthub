@@ -77,3 +77,17 @@ export function createBaseQuestion(type) {
             }
     }
 }
+
+export function replaceQuestion(elements, name, element) {
+    let result = [];
+
+    for (let i = 0; i < elements.length; i++) {
+        if (elements[i].name === name) {
+            result.push(element);
+        } else {
+            result.push(elements[i]);
+        }
+    }
+
+    return result;
+}
