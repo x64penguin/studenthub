@@ -8,6 +8,8 @@ import {createBaseQuestion, replaceQuestion} from "../../components/TaskView/tas
 import {replaceObject} from "../../utils";
 import {Input} from "../../components/Input/Input";
 import {Checkbox} from "../../components/Checkbox/Checkbox";
+import {SquareButton} from "../../components/Button/SquareButton";
+import delete_icon from "./delete-icon.svg";
 
 export function TasksEditPage(props) {
     const {
@@ -40,6 +42,7 @@ export function TasksEditPage(props) {
             ...tasks[activeTask], elements: [...tasks[activeTask].elements, el]
         });
         setEditingElement(el);
+        setElementSelectorOpened(false);
         setElementEditorOpened(true);
     }
 
@@ -145,10 +148,36 @@ export function TasksEditPage(props) {
                         replaceObject(tasks, setTasks, activeTask, {
                             ...tasks[activeTask], elements: replaceQuestion(tasks[activeTask].elements, editingElement.name, newElement)
                         });
+                        setTextAreaValue(textAreaValue.replace(`$[${editingElement.name}]`, `$$[${newElement.name}]`));
                     }}
                 />
             </Popup>
         </div>
+    </div>
+}
+
+function VariantAdder({variants, onAdd, onDelete}) {
+    const [variantName, setVariantName] = useState("");
+
+    const VariantCard = ({children}) => {
+        return <div className="variant-card">
+            <span>{children}</span>
+            <SquareButton className="variant-delete"><img src={delete_icon} alt="delete"/></SquareButton>
+        </div>
+    }
+
+    return <div className="variant_adder">
+        {
+            variants.map(variant => {
+                return <VariantCard>{variant}</VariantCard>
+            })
+        }
+        <Input
+            className="variant_name_inp"
+            invalid={variants.indexOf(variantName) !== -1}
+            onChange={(e) => setVariantName(e.target.value)}
+        />
+        <Button style="secondary" onClick={() => onAdd(variantName)} className="w-100">+ Добавить вариант</Button>
     </div>
 }
 
@@ -159,7 +188,7 @@ function ElementEditor({ element, onSave, validator }) {
         setEditedElement(element);
     }
 
-    if (element === undefined) {
+    if (editedElement === undefined || editedElement === null || element === undefined) {
         return;
     }
 
@@ -185,6 +214,14 @@ function ElementEditor({ element, onSave, validator }) {
                 label="Правильный ответ"
                 value={element.right}
                 onChange={e => setEditedElement({...editedElement, right: e.target.value})}
+            />);
+            break;
+        case "select":
+            result.push(inlineMode);
+            result.push(<VariantAdder
+                variants={editedElement.variants}
+                onAdd={variant => {setEditedElement({...editedElement, variants: [...editedElement.variants, variant]})}}
+                onDelete={variant => {}}
             />);
             break;
         default:

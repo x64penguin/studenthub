@@ -1,11 +1,10 @@
 import "./SquareButton.css"
 
-export function SquareButton(props) {
-    const {
+export function SquareButton({
         children,
         className = "",
         onClick
-    } = props;
+    }) {
 
     return <button className={"controls square-button " + className} onClick={onClick}>
         { children }

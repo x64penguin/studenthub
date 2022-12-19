@@ -1,8 +1,7 @@
 import "./Input.css";
 const classnames = require("classnames");
 
-export function Input(props) {
-    const {
+export function Input({
         invalid = false,
         label,
         placeholder = "",
@@ -10,7 +9,7 @@ export function Input(props) {
         value = "",
         className = "",
         onChange
-    } = props;
+    }) {
 
     const classes = classnames({
         "input-default": true,

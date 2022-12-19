@@ -14,8 +14,7 @@ import {LinkButton} from "../../components/Button/LinkButton";
 
 export function ProfilePage() {
     const { userId } = useParams();
-    const [user, setUser] = useState({});
-    const [status, setStatus] = useState("loading");
+    const [user, setUser] = useState(undefined);
     const currentUser = useSelector(selectUser);
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("Пройденные тесты");
@@ -24,17 +23,12 @@ export function ProfilePage() {
         api_get("user/" + userId, (data) => {
             if (data.response === "success") {
                 setUser(data.user);
-                setStatus("success");
-            } else {
-                setStatus(data.response);
             }
         });
-    }, [setUser, setStatus, userId]);
+    }, [setUser, userId]);
 
-    if (status === "loading") {
+    if (user === undefined) {
         return <Loading />;
-    } else if (status !== "success") {
-        return <ErrorPage error={status} />;
     }
 
     const ProfileStats = ({label, stat}) => {
@@ -92,7 +86,7 @@ export function ProfilePage() {
             </div>
             <div className={cnTab(activeTab === "Созданные тесты")}>
                 {
-                    currentUser.tests_created.map(renderTestCard)
+                    user.tests_created.map(renderTestCard)
                 }
             </div>
             { user.id === currentUser.id ?

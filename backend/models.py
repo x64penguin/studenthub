@@ -47,22 +47,25 @@ class User(UserMixin, db.Model):
         base_json = self.json()
         base_json["email"] = str(self.email) # for some reason email has been sending as array
         base_json["sessions"] = self.jsonify_sessions()
-        base_json["tests_created"] = []
 
-        for test in self.tests_created:
-            base_json["tests_created"].append(test.json())
         return base_json
 
     def json(self) -> dict:
-        return {
+        result =  {
             "id": self.id,
             "username": self.username,
             "name": self.name,
             "account_type": self.account_type,
             "avatar": self.avatar,
             "joined": self.joined.strftime("%d %B %Y"),
+            "tests_created": [],
             "badge": ["admin", "Админ"] if self.id == 1 else ["teacher", "Учитель"] if self.account_type == 1 else ["student", "Ученик"]
         }
+
+        for test in self.tests_created:
+            result["tests_created"].append(test.json())
+        return result
+
 
 
 def get_user(identifier: int | str) -> User:
