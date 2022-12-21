@@ -148,6 +148,7 @@ export function TasksEditPage(props) {
                         replaceObject(tasks, setTasks, activeTask, {
                             ...tasks[activeTask], elements: replaceQuestion(tasks[activeTask].elements, editingElement.name, newElement)
                         });
+                        setEditingElement(undefined);
                         setTextAreaValue(textAreaValue.replace(`$[${editingElement.name}]`, `$$[${newElement.name}]`));
                     }}
                 />
@@ -158,6 +159,10 @@ export function TasksEditPage(props) {
 
 function VariantAdder({variants, onAdd, onDelete}) {
     const [variantName, setVariantName] = useState("");
+
+    if (variants === undefined) {
+        return null;
+    }
 
     const VariantCard = ({children}) => {
         return <div className="variant-card">
@@ -184,8 +189,11 @@ function VariantAdder({variants, onAdd, onDelete}) {
 function ElementEditor({ element, onSave, validator }) {
     const [editedElement, setEditedElement] = useState(element);
 
+    // я не знаю как пофиксить этот кринж без костылей
     if (editedElement === undefined && element !== undefined) {
         setEditedElement(element);
+    } else if (editedElement !== undefined && element === undefined) {
+        setEditedElement(undefined);
     }
 
     if (editedElement === undefined || editedElement === null || element === undefined) {
