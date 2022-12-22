@@ -30,26 +30,24 @@ export function TabSwitch(props) {
         "secondary": style === "secondary"
     });
 
-    return (
-        <div className={classes + " " + className}>
-            {tabs.map((tab, index) => {
-                return (
-                    <TabLabel
-                        key={index}
-                        style={style}
-                        active={tab.props.children === active}
-                        onClick={() => {
-                            const newActive= tab.props.children;
-                            setActive(newActive);
-                            onChange(newActive);
-                        }}
-                    >
-                        {tab.props.children}
-                    </TabLabel>
-                );
-            })}
-        </div>
-    );
+    return <div className={classNames(classes, className)}>
+        {
+            tabs.map((tab, index) => {
+                return <TabLabel
+                    key={index}
+                    style={style}
+                    active={tab.props.children === active}
+                    onClick={() => {
+                        const newActive= tab.props.children;
+                        setActive(newActive);
+                        onChange(newActive);
+                    }}
+                >
+                    {tab.props.children}
+                </TabLabel>;
+            })
+        }
+    </div>
 }
 
 

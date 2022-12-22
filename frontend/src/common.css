@@ -6,7 +6,7 @@
     background: #fcfcfc;
     border-radius: 18px;
     padding: var(--default-padding);
-    box-shadow: 0 0 50px rgba(40, 40, 80, 0.05);
+    box-shadow: 0 0 50px rgba(40, 40, 80, 0.03);
 }
 
 .form-label {

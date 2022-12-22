@@ -10,6 +10,7 @@
     border-radius: 14px;
     margin-left: auto;
     margin-right: auto;
+    box-shadow: none!important;
 }
 
 .tab-switch__label {

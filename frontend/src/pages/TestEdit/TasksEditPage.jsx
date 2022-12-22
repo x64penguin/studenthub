@@ -125,8 +125,8 @@ export function TasksEditPage(props) {
                             return null;
                         }
 
-                        return tasks[activeTask].elements.map(el => {
-                            return <span onClick={() => {
+                        return tasks[activeTask].elements.map((el, idx) => {
+                            return <span key={idx} onClick={() => {
                                 setElementEditorOpened(true);
                                 setElementListOpened(false);
                                 setEditingElement(el);
@@ -143,6 +143,15 @@ export function TasksEditPage(props) {
             >
                 <ElementEditor
                     element={editingElement}
+                    validator={e => {
+                        let result = false;
+                        tasks[activeTask].elements.forEach(el => {
+                            if (el.name === e) {
+                                result = true;
+                            }
+                        });
+                        return result;
+                    }}
                     onSave={(newElement) => {
                         setElementEditorOpened(false);
                         replaceObject(tasks, setTasks, activeTask, {
@@ -167,14 +176,14 @@ function VariantAdder({variants, onAdd, onDelete}) {
     const VariantCard = ({children}) => {
         return <div className="variant-card">
             <span>{children}</span>
-            <SquareButton className="variant-delete"><img src={delete_icon} alt="delete"/></SquareButton>
+            <Button className="variant-delete" onClick={() => onDelete(children)}><img src={delete_icon} alt="delete"/></Button>
         </div>
     }
 
     return <div className="variant_adder">
         {
-            variants.map(variant => {
-                return <VariantCard>{variant}</VariantCard>
+            variants.map((variant, idx) => {
+                return <VariantCard key={idx}>{variant}</VariantCard>
             })
         }
         <Input
@@ -190,19 +199,19 @@ function ElementEditor({ element, onSave, validator }) {
     const [editedElement, setEditedElement] = useState(element);
 
     // я не знаю как пофиксить этот кринж без костылей
-    if (editedElement === undefined && element !== undefined) {
+    if (!editedElement && element) {
         setEditedElement(element);
-    } else if (editedElement !== undefined && element === undefined) {
+    } else if (editedElement && !element) {
         setEditedElement(undefined);
     }
 
-    if (editedElement === undefined || editedElement === null || element === undefined) {
+    if (!editedElement || !element) {
         return;
     }
 
     const nameEdit = <Input
         label="Название"
-        invalid={validator}
+        invalid={validator(editedElement.name)}
         value={element.name}
         onChange={e => setEditedElement({...editedElement, name: e.target.value})}
     />;
@@ -228,8 +237,10 @@ function ElementEditor({ element, onSave, validator }) {
             result.push(inlineMode);
             result.push(<VariantAdder
                 variants={editedElement.variants}
-                onAdd={variant => {setEditedElement({...editedElement, variants: [...editedElement.variants, variant]})}}
-                onDelete={variant => {}}
+                onAdd={variant => setEditedElement({...editedElement, variants: [...editedElement.variants, variant]})}
+                onDelete={variant => {
+                    setEditedElement({...editedElement, variants: editedElement.variants.filter(vr => vr !== variant)});
+                }}
             />);
             break;
         default:

@@ -2,7 +2,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {api_get, api_post, staticFile} from "../../utils";
 import {Loading} from "../../components/Loading/Loading";
-import "./TestEdit.css"
+import "./TestEdit.css";
 import {cnTab, TabLabel, TabSwitch} from "../../components/TabSwitch/TabSwitch";
 import {Input} from "../../components/Input/Input";
 import {FileInput} from "../../components/FileInput/FileInput";
