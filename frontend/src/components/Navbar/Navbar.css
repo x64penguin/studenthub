@@ -5,17 +5,17 @@ nav {
     display: flex;
     vertical-align: middle;
     box-sizing: border-box;
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(15px);
     padding: 0 15%;
-    border-bottom: 1px solid rgb(190, 190, 190);
-    font-family: "Roboto";
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    font-family: "Roboto", sans-serif;
     font-weight: 400;
 }
 
 .nav__title {
     display: inline-block;
-    font-family: 'Fredoka One';
+    font-family: 'Fredoka One', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 2rem;

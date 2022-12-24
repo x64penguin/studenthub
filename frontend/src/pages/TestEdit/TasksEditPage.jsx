@@ -32,14 +32,15 @@ export function TasksEditPage(props) {
 
     const insertNewElement = (el) => {
         let textArea = textAreaRef.current;
-        setTextAreaValue(insertIntoText(
+        let newTextAreaValue = insertIntoText(
             textArea.value,
             textArea.selectionStart,
             textArea.selectionEnd,
             "$[" + el.name + "]"
-        ));
+        );
+        setTextAreaValue(newTextAreaValue);
         replaceObject(tasks, setTasks, activeTask, {
-            ...tasks[activeTask], elements: [...tasks[activeTask].elements, el]
+            elements: [...tasks[activeTask].elements, el], text: newTextAreaValue
         });
         setEditingElement(el);
         setElementSelectorOpened(false);
@@ -90,7 +91,12 @@ export function TasksEditPage(props) {
             <textarea
                 ref={textAreaRef}
                 value={textAreaValue}
-                onChange={e => setTextAreaValue(e.target.value)}
+                onChange={e => {
+                    setTextAreaValue(e.target.value);
+                    replaceObject(tasks, setTasks, activeTask, {
+                        ...tasks[activeTask], text: e.target.value
+                    });
+                }}
                 className="input-default main-task-area"
             />
             <div className="task-preview">
@@ -100,7 +106,7 @@ export function TasksEditPage(props) {
                 <Button style="secondary" onClick={() => setElementSelectorOpened(true)}>Добавить элемент</Button>
                 <Button style="secondary" onClick={() => setElementListOpened(true)}>Редактировать элемент</Button>
                 <Button style="secondary">Удалить</Button>
-                <Button>Сохранить</Button>
+                <Button onClick={() => console.log(tasks)}>Сохранить</Button>
             </div>
             <Popup
                 opened={elementSelectorOpened}
@@ -144,6 +150,10 @@ export function TasksEditPage(props) {
                 <ElementEditor
                     element={editingElement}
                     validator={e => {
+                        if (e === editingElement.name) {
+                            return false;
+                        }
+
                         let result = false;
                         tasks[activeTask].elements.forEach(el => {
                             if (el.name === e) {
@@ -197,12 +207,17 @@ function VariantAdder({variants, onAdd, onDelete}) {
 
 function ElementEditor({ element, onSave, validator }) {
     const [editedElement, setEditedElement] = useState(element);
+    const [previousElement, setPreviousElement] = useState(element);
 
-    // я не знаю как пофиксить этот кринж без костылей
     if (!editedElement && element) {
         setEditedElement(element);
     } else if (editedElement && !element) {
         setEditedElement(undefined);
+    }
+
+    if (element != previousElement) {
+        setPreviousElement(element);
+        setEditedElement(element);
     }
 
     if (!editedElement || !element) {
@@ -235,6 +250,10 @@ function ElementEditor({ element, onSave, validator }) {
             break;
         case "select":
             result.push(inlineMode);
+            result.push(<Checkbox 
+                onChange={e => setEditedElement({...editedElement, multiselect: e})}>
+                Множественный выбор
+            </Checkbox>);
             result.push(<VariantAdder
                 variants={editedElement.variants}
                 onAdd={variant => setEditedElement({...editedElement, variants: [...editedElement.variants, variant]})}

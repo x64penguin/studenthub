@@ -25,7 +25,7 @@ function App() {
                         <Route path="/user/:userId/edit" element={<ProfileSettings/>}/>
                         <Route path="/create" element={<CreateTest/>}/>
                         <Route path="/test/:testId/edit" element={<TestEdit/>}/>
-                        <Route path="*" element={<ErrorPage error="404"/>}/>
+                        <Route path="*" element={<ErrorPage error="404" description="Not Found"/>}/>
                     </Routes>
                 </Layout>
             </BrowserRouter>
