@@ -36,7 +36,7 @@ function NavMenu(props) {
 
     return (
         <div className="menu-dropdown__wrapper">
-            <button type="button" className="menu-button" onClick={() => setOpened(!opened)}><img src={menu_icon}/></button>
+            <button type="button" className="menu-button" onClick={() => setOpened(!opened)}><img alt="menu icon" src={menu_icon}/></button>
             <Dropdown onClick={closeMenu} opened={opened}>
                 <DropdownItem link="/catalog">Каталог</DropdownItem>
                 <DropdownItem link="/about">О проекте</DropdownItem>

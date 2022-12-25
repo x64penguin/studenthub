@@ -109,3 +109,7 @@
     width: 1rem;
     height: 1rem;
 }
+
+.element-editor__select-preview {
+    margin-top: var(--default-margin);
+}

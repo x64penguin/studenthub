@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import {ErrorPage} from "../../components/ErrorPage/ErrorPage";
 import {Loading} from "../../components/Loading/Loading";
 import {api_get} from "../../utils";
 import "./Profile.css";

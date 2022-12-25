@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../../components/Button/Button";
 import { Input } from "../../components/Input/Input";
 import { Option, Select } from "../../components/Select/Select";
-import { api_get, api_post, async_api_post } from "../../utils";
+import { async_api_post } from "../../utils";
 import { useNavigate } from "react-router-dom";
 import "./Register.css"
 import { ServerError } from "../../components/ServerError/ServerError";
@@ -40,7 +40,7 @@ export function Register(props) {
 
         let registerData = await registerResponse.json();
 
-        if (registerData.response == "success") {
+        if (registerData.response === "success") {
             return navigate("/login");
         } else {
             setServerError(registerData.response);
@@ -52,15 +52,15 @@ export function Register(props) {
             <h1 className="form-label">Регистрация</h1>
             <Input label="Логин" onChange={(event) => setForm({...form, username: event.target.value})} invalid={!usernameValid}/>
             <Input label="Имя, фамилия" onChange={(event) => setForm({...form, name: event.target.value})}/>
-            <Input label="Электронная почта" onChange={(event) => setForm({...form, email: event.target.value})} invalid={form.email.search("@") == -1}/>
+            <Input label="Электронная почта" onChange={(event) => setForm({...form, email: event.target.value})} invalid={form.email.search("@") === -1}/>
             <Input label="Пароль" onChange={(event) => setForm({...form, password: event.target.value})} type="password" invalid={form.password.length < 6}/>
-            <Input label="Повторите пароль" onChange={(event) => setForm({... form, "confirm-password": event.target.value})} type="password" invalid={form.password != form["confirm-password"]}/>
+            <Input label="Повторите пароль" onChange={(event) => setForm({...form, "confirm-password": event.target.value})} type="password" invalid={form.password !== form["confirm-password"]}/>
             <Select label="Тип аккаунта" onChange={(id) => setForm({...form, "account-type": id})}>
                 <Option>Ученик</Option>
                 <Option>Учитель</Option>
             </Select>
             <ServerError error={serverError}/>
-            <Button type="submit">Зрегистрироваться</Button>
+            <Button type="submit">Зарегистрироваться</Button>
         </form>
     </div>
 }

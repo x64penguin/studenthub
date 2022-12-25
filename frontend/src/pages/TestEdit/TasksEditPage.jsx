@@ -8,8 +8,8 @@ import {createBaseQuestion, replaceQuestion} from "../../components/TaskView/tas
 import {replaceObject} from "../../utils";
 import {Input} from "../../components/Input/Input";
 import {Checkbox} from "../../components/Checkbox/Checkbox";
-import {SquareButton} from "../../components/Button/SquareButton";
 import delete_icon from "./delete-icon.svg";
+import {SelectTask} from "../../components/TaskView/Select";
 
 export function TasksEditPage(props) {
     const {
@@ -215,7 +215,7 @@ function ElementEditor({ element, onSave, validator }) {
         setEditedElement(undefined);
     }
 
-    if (element != previousElement) {
+    if (element !== previousElement) {
         setPreviousElement(element);
         setEditedElement(element);
     }
@@ -261,6 +261,16 @@ function ElementEditor({ element, onSave, validator }) {
                     setEditedElement({...editedElement, variants: editedElement.variants.filter(vr => vr !== variant)});
                 }}
             />);
+            result.push(<SelectTask
+                className="element-editor__select-preview"
+                element={editedElement}
+                onChange={(newRight) => {
+                    setEditedElement({...editedElement, right: newRight});
+                }}
+            />);
+            break;
+        case "order":
+
             break;
         default:
             // TODO: make variant adder for others

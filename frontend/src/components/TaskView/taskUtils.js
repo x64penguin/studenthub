@@ -43,6 +43,7 @@ export function createBaseQuestion(type) {
     const baseQuestion = {
         name: id,
         inline: false,
+        points: 1
     }
     switch (type) {
         case "Ввод":
