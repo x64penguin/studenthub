@@ -147,6 +147,7 @@ export function TasksEditPage(props) {
                 label="Редактировать элемент"
                 className="element-editor"
             >
+                { elementEditorOpened &&
                 <ElementEditor
                     element={editingElement}
                     validator={e => {
@@ -167,10 +168,9 @@ export function TasksEditPage(props) {
                         replaceObject(tasks, setTasks, activeTask, {
                             ...tasks[activeTask], elements: replaceQuestion(tasks[activeTask].elements, editingElement.name, newElement)
                         });
-                        setEditingElement(undefined);
                         setTextAreaValue(textAreaValue.replace(`$[${editingElement.name}]`, `$$[${newElement.name}]`));
                     }}
-                />
+                /> }
             </Popup>
         </div>
     </div>
@@ -207,31 +207,21 @@ function VariantAdder({variants, onAdd, onDelete}) {
 
 function ElementEditor({ element, onSave, validator }) {
     const [editedElement, setEditedElement] = useState(element);
-    const [previousElement, setPreviousElement] = useState(element);
 
-    if (!editedElement && element) {
-        setEditedElement(element);
-    } else if (editedElement && !element) {
-        setEditedElement(undefined);
-    }
-
-    if (element !== previousElement) {
-        setPreviousElement(element);
-        setEditedElement(element);
-    }
-
-    if (!editedElement || !element) {
-        return;
+    if (!element) {
+        return null;
     }
 
     const nameEdit = <Input
         label="Название"
+        key="label"
         invalid={validator(editedElement.name)}
         value={element.name}
         onChange={e => setEditedElement({...editedElement, name: e.target.value})}
     />;
 
     const inlineMode = <Checkbox
+        key="inline-mode"
         onChange={e => setEditedElement({...editedElement, inline: e})}
     >
         Внутристрочный
@@ -243,6 +233,7 @@ function ElementEditor({ element, onSave, validator }) {
         case "input":
             result.push(inlineMode);
             result.push(<Input
+                key="right-answer"
                 label="Правильный ответ"
                 value={element.right}
                 onChange={e => setEditedElement({...editedElement, right: e.target.value})}
@@ -250,11 +241,13 @@ function ElementEditor({ element, onSave, validator }) {
             break;
         case "select":
             result.push(inlineMode);
-            result.push(<Checkbox 
+            result.push(<Checkbox
+                key="multiple"
                 onChange={e => setEditedElement({...editedElement, multiselect: e})}>
                 Множественный выбор
             </Checkbox>);
             result.push(<VariantAdder
+                key="variant-adder"
                 variants={editedElement.variants}
                 onAdd={variant => setEditedElement({...editedElement, variants: [...editedElement.variants, variant]})}
                 onDelete={variant => {
@@ -262,6 +255,7 @@ function ElementEditor({ element, onSave, validator }) {
                 }}
             />);
             result.push(<SelectTask
+                key="right-selector"
                 className="element-editor__select-preview"
                 element={editedElement}
                 onChange={(newRight) => {

@@ -20,7 +20,6 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(128), unique=True)
     account_type = db.Column(db.Integer)
     password_hash = db.Column(db.String(128))
-    avatar = db.Column(db.String(128), default=None)
     joined: date = db.Column(db.Date, default=date.today())
     sessions = db.relationship("UserSession", backref="user", lazy="dynamic")
     tests_created = db.relationship("Test", backref="user", lazy="dynamic")
@@ -56,7 +55,6 @@ class User(UserMixin, db.Model):
             "username": self.username,
             "name": self.name,
             "account_type": self.account_type,
-            "avatar": self.avatar,
             "joined": self.joined.strftime("%d %B %Y"),
             "tests_created": [],
             "badge": ["admin", "Админ"] if self.id == 1 else ["teacher", "Учитель"] if self.account_type == 1 else ["student", "Ученик"]
@@ -65,7 +63,6 @@ class User(UserMixin, db.Model):
         for test in self.tests_created:
             result["tests_created"].append(test.json())
         return result
-
 
 
 def get_user(identifier: int | str) -> User:
@@ -93,7 +90,6 @@ class Test(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     description = db.Column(db.String(128))
     uuid = db.Column(db.String(32))
-    avatar = db.Column(db.String(8), default=None)
 
     def json(self):
         with open(os.path.join(TESTS_PATH, self.uuid + ".json"), "r", encoding="utf8") as tasks_file:

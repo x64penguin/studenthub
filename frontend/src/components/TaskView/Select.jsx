@@ -7,8 +7,9 @@ export function SelectTask({element, className, onChange}) {
 
     return <div className={className}>
         {
-            element.variants.map(v => {
+            element.variants.map((v, idx) => {
                 return <span
+                    key={idx}
                     className={classNames({"select-task__variant": true, "selected": selectedValues[v]})}
                     onClick={() => {
                         let newSelectedValues;

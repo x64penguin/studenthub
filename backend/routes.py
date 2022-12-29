@@ -96,7 +96,10 @@ def api_get_avatar(uid):
     if user is None:
         return send_file(default_path)
 
-    return send_file(os.path.join(app.config["AVATAR_FOLDER"], user.avatar) if user.avatar is not None else default_path)
+    try:
+        return send_file(os.path.join(app.config["AVATAR_FOLDER"], str(user.id) + ".png"))
+    except FileNotFoundError:
+        return send_file(default_path)
 
 
 @app.route("/api/edit_profile/<int:uid>", methods=["POST"])
@@ -109,14 +112,11 @@ def api_edit_profile(current_user, uid):
     
     try:
         avatar_file = request.files["avatar"]
-        ext = avatar_file.filename.split(".")[-1]
-        img = Image.open(avatar_file)
-        #TODO: crop to square and resize 256x256
-        avatar_path = os.path.join(app.config["AVATAR_FOLDER"], str(uid) + "." + ext)
-        avatar_file.save(avatar_path)
-        current_user.avatar = str(uid) + "." + ext
+        resized = utils.crop_and_resize(avatar_file)
+        avatar_path = os.path.join(app.config["AVATAR_FOLDER"], str(uid) + ".png")
+        resized.save(avatar_path, "png")
     except KeyError:
-        ... # avatar not changed
+        ...  # avatar not changed
 
     db.session.commit()
 
@@ -161,10 +161,10 @@ def test_icon(tid):
     if test is None:
         return {"response": 404}, 404
 
-    if test.avatar is not None:
+    try:
+        return send_file(os.path.join(TESTS_PATH, ".default.svg"))
+    except FileNotFoundError:
         return send_file(os.path.join(TESTS_PATH, test.uuid + test.avatar))
-
-    return send_file(os.path.join(TESTS_PATH, ".default.svg"))
 
 
 @app.route("/api/test/<int:test_id>")
