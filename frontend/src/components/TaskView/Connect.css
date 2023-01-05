@@ -1,0 +1,40 @@
+.connect-variants {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    min-height: 16px;
+    background-color: rgb(240, 240, 240);
+    border-radius: 6px;
+}
+
+.connect-variant {
+    border: 1px solid #AAA;
+    padding: 0.3rem;
+    border-radius: 6px;
+    background-color: white;
+    cursor: grab;
+}
+
+.connect-to-variant {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 0.75rem;
+    border-radius: 6px;
+    width: 100%;
+    background-color: #3c52b4;
+    padding: 0.5rem;
+    transition: box-shadow 0.3s;
+}
+
+.connect-to-label {
+    color: white;
+}
+
+.connect-to-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 0.5rem;
+    background-color: white;
+    border-radius: 6px;
+}

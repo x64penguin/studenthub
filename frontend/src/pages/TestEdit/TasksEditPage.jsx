@@ -10,6 +10,8 @@ import {Input} from "../../components/Input/Input";
 import {Checkbox} from "../../components/Checkbox/Checkbox";
 import delete_icon from "./delete-icon.svg";
 import {SelectTask} from "../../components/TaskView/Select";
+import {ReorderTask} from "../../components/TaskView/Reorder";
+import {ConnectTask} from "../../components/TaskView/Connect";
 
 export function TasksEditPage(props) {
     const {
@@ -17,6 +19,7 @@ export function TasksEditPage(props) {
     } = props;
     const [activeTask, _setActiveTask] = useState(0);
     const [tasks, setTasks] = useState(test.tasks);
+    // TODO: почистить этот мусор
     const [elementSelectorOpened, setElementSelectorOpened] = useState(false);
     const [elementListOpened, setElementListOpened] = useState(false);
     const [elementEditorOpened, setElementEditorOpened] = useState(false);
@@ -207,6 +210,7 @@ function VariantAdder({variants, onAdd, onDelete}) {
 
 function ElementEditor({ element, onSave, validator }) {
     const [editedElement, setEditedElement] = useState(element);
+    const [connectRight, setConnectRight] = useState(element.right);
 
     if (!element) {
         return null;
@@ -264,14 +268,83 @@ function ElementEditor({ element, onSave, validator }) {
             />);
             break;
         case "order":
+            result.push(<VariantAdder
+                key="variant-adder"
+                variants={editedElement.variants}
+                onAdd={variant => setEditedElement({...editedElement, variants: [...editedElement.variants, variant], right: [...editedElement.right, variant]})}
+                onDelete={variant => {
+                    setEditedElement({...editedElement,
+                        variants: editedElement.variants.filter(vr => vr !== variant),
+                        right: editedElement.right.filter(vr => vr !== variant)
+                    });
+                }}
+            />);
+            result.push(<ReorderTask
+                variants={editedElement.right}
+                onChange={nv => setEditedElement({...editedElement, right: nv})}
+            />);
+            break;
+        case "connect":
+            result.push(<h2 key="element-label" className="element-label">Выбор из</h2>);
+            result.push(<VariantAdder
+                key="variant-adder-l"
+                variants={editedElement.variants_l}
+                onAdd={variant => {
+                    setEditedElement({...editedElement, variants_l: [...editedElement.variants_l, variant]});
+                    setConnectRight([[...connectRight[0], variant], connectRight[1]]);
+                }}
+                onDelete={variant => {
+                    setEditedElement({...editedElement, variants_l: editedElement.variants_l.filter(vr => vr !== variant)});
+                    let newRightAnswer = {};
+                    for (const [idx, vr] in connectRight[1].entries()) {
+                        if (variant !== vr) {
+                            newRightAnswer[idx] = vr;
+                        }
+                    }
+                    setConnectRight([
+                        connectRight[0].filter(vr => vr !== variant),
+                        newRightAnswer
+                    ]);
+                }}
+            />);
 
+            result.push(<h2 key="element-label2" className="element-label">Выбор в</h2>);
+            result.push(<VariantAdder
+                key="variant-adder-r"
+                variants={editedElement.variants_r}
+                onAdd={variant => {
+                    setEditedElement({...editedElement, variants_r: [...editedElement.variants_r, variant]});
+                    setConnectRight([connectRight[0], {...connectRight[1], [variant]: []}]);
+                }}
+                onDelete={variant => {
+                    setEditedElement({...editedElement, variants_r: editedElement.variants_r.filter(vr => vr !== variant)})
+                    let newRightAnswer = {};
+                    for (const [idx, vr] in connectRight[1].entries()) {
+                        if (variant !== idx) {
+                            newRightAnswer[idx] = vr;
+                        }
+                    }
+                    setConnectRight([
+                        connectRight[0].filter(vr => vr !== variant),
+                        newRightAnswer
+                    ]);
+                }}
+            />);
+            result.push(<ConnectTask answer={connectRight} onChange={setConnectRight}/>);
             break;
         default:
-            // TODO: make variant adder for others
             break;
     }
 
-    result.push(<Button onClick={() => onSave(editedElement)}>Сохранить</Button>);
+    result.push(<Button
+        onClick={() => {
+            if (editedElement.qtype === "connect") {
+                return onSave({...editedElement, right: connectRight});
+            }
+            onSave(editedElement);
+        }}
+        >Сохранить
+    </Button>);
     return result;
 }
 

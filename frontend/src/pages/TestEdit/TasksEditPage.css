@@ -67,6 +67,7 @@
 .element-editor {
     left: 30%;
     top: 50%;
+    width: 25rem;
     transform: translateY(-50%);
 }
 

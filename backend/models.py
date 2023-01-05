@@ -81,7 +81,7 @@ class UserSession(db.Model):
     device = db.Column(db.String(128))
 
     def check(self, request) -> bool:
-        return request.remote_addr == self.ip and datetime.utcnow() < self.expires
+        return request.remote_addr == self.ip
 
 
 class Test(db.Model):

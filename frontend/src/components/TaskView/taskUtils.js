@@ -74,7 +74,7 @@ export function createBaseQuestion(type) {
                 qtype: "connect",
                 variants_l: [],
                 variants_r: [],
-                right: [],
+                right: [[], {}],
             }
     }
 }

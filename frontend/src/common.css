@@ -2,6 +2,14 @@
     margin-top: 1rem;
 }
 
+.mb-1 {
+    margin-bottom: 1rem;
+}
+
+.mt-d {
+    margin-top: var(--default-margin);
+}
+
 .block-default {
     background: #fcfcfc;
     border-radius: 18px;
@@ -20,6 +28,7 @@
     transition: background-color .25s;
 }
 
+.element-label,
 .input-group > label {
     display: block;
     margin: var(--default-margin) 0 0.35rem;

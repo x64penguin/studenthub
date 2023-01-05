@@ -24,6 +24,11 @@ def get_current_user() -> User:
     if session is None or not session.check(request):
         return None
 
+    if session.expires < datetime.utcnow():
+        db.session.delete(session)
+        db.session.commit()
+        return None
+
     return session.user
 
 

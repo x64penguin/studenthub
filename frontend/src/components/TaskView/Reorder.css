@@ -1,0 +1,13 @@
+.reorder-task {
+    list-style: none;
+    padding: 0;
+}
+
+.reorder__item {
+    margin-bottom: 0.75rem;
+    border-radius: 6px;
+    width: 100%;
+    background-color: #d2eaff;
+    padding: 0.5rem;
+    cursor: grab;
+}
