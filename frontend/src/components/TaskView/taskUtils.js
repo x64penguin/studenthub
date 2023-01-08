@@ -1,8 +1,7 @@
-import {parse, v4 as uuid} from "uuid";
+import {v4 as uuid} from "uuid";
 
 function parseTaskElements(str) {
-    const regex = /$[[^]]]/g;
-    const matches = str.match(regex);
+    const matches = str.match(/\$\[.+?]/g);
 
     if (!matches) {
         return [];
@@ -20,20 +19,50 @@ function parseTaskElements(str) {
     return parsedValues;
 }
 
-export function generateTask(rawText, elements) {
-    let elementNames = parseTaskElements(rawText);
+export function generateTask({text, elements}) {
+    let elementNames = parseTaskElements(text);
     let task = [];
     let startIndex = 0;
 
     for (let i = 0; i < elementNames.length; i++) {
         const name = elementNames[i];
-        const substring = rawText.substring(startIndex, name.index);
+        const substring = text.substring(startIndex, name.index);
+        const element = elements.find(e => e.name === name.value);
 
         task.push(substring);
-        task.push(elements[name.value]);
+        if (element.qtype === "connect") {
+            task.push({...element, right: element.right[1]});
+        } else {
+            task.push(element);
+        }
 
         startIndex = name.index + name.value.length + 3;
     }
+
+    task.push(text.substring(startIndex));
+
+    return task;
+}
+
+export function formatTask(task) {
+    let formatted = {
+        text: "",
+        elements: [],
+    };
+
+    task.forEach(fragment => {
+       if (typeof fragment === "string") {
+           formatted.text += fragment;
+       } else {
+           formatted.text += `$[${fragment.name}]`;
+
+           if (fragment.qtype === "connect") {
+               formatted.elements.push({...fragment, right: [[], fragment.right]});
+           } else {
+               formatted.elements.push(fragment);
+           }
+       }
+    });
 
     return task;
 }
