@@ -1,13 +1,12 @@
+import json
 import uuid
 
 from app import app, db
 import os
 import utils
-from os.path import join
 from flask import request, send_file, Response
 from models import get_user, User, UserSession, Test
 from authorization import get_current_user, login_required, login_user, logout_user
-from PIL import Image
 from shtest import SHTest, TESTS_PATH
 
 
@@ -147,7 +146,6 @@ def api_create_test(user):
         image = None
     test = Test(name=data["name"], description=data["description"], author_id=user.id, uuid=uuid.uuid4().hex)
 
-
     return {
         "response": "success",
         "test": test.test.id
@@ -197,6 +195,23 @@ def edit_test(user, test_id):
 
     if len(request.files) != 0:
         ...  #TODO: upload image
+
+    return {"response": "success"}, 200
+
+
+@app.route("/api/upload_tasks/<int:test_id>", methods=["POST"])
+@login_required
+def upload_tasks(user, test_id):
+    test = Test.query.filter_by(id=test_id).first()
+    if test is None:
+        return {"response", 404}, 404
+
+    if user.id != test.author_id:
+        return {"response", "unauthorized"}, 401
+
+    file = open(os.path.join(TESTS_PATH, test.uuid + ".json"), "w", encoding="utf8")
+    file.write(json.dumps(request.json))
+    file.close()
 
     return {"response": "success"}, 200
 

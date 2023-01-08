@@ -4,8 +4,8 @@ import classNames from "classnames";
 import {Button} from "../../components/Button/Button";
 import {TaskView} from "../../components/TaskView/TaskView";
 import {Popup} from "../../components/Popup/Popup";
-import {createBaseQuestion, replaceQuestion} from "../../components/TaskView/taskUtils";
-import {replaceObject} from "../../utils";
+import {createBaseQuestion, formatTask, generateTask, replaceQuestion} from "../../components/TaskView/taskUtils";
+import {api_post, replaceObject} from "../../utils";
 import {Input} from "../../components/Input/Input";
 import {Checkbox} from "../../components/Checkbox/Checkbox";
 import delete_icon from "./delete-icon.svg";
@@ -13,12 +13,9 @@ import {SelectTask} from "../../components/TaskView/Select";
 import {ReorderTask} from "../../components/TaskView/Reorder";
 import {ConnectTask} from "../../components/TaskView/Connect";
 
-export function TasksEditPage(props) {
-    const {
-        test
-    } = props;
+export function TasksEditPage({test}) {
     const [activeTask, _setActiveTask] = useState(0);
-    const [tasks, setTasks] = useState(test.tasks);
+    const [tasks, setTasks] = useState(test.tasks.map(formatTask));
     // TODO: почистить этот мусор
     const [elementSelectorOpened, setElementSelectorOpened] = useState(false);
     const [elementListOpened, setElementListOpened] = useState(false);
@@ -109,7 +106,11 @@ export function TasksEditPage(props) {
                 <Button style="secondary" onClick={() => setElementSelectorOpened(true)}>Добавить элемент</Button>
                 <Button style="secondary" onClick={() => setElementListOpened(true)}>Редактировать элемент</Button>
                 <Button style="secondary">Удалить</Button>
-                <Button onClick={() => console.log(tasks)}>Сохранить</Button>
+                <Button onClick={() =>
+                    api_post("upload_tasks/" + test.id, tasks.map(generateTask))}
+                >
+                    Сохранить
+                </Button>
             </div>
             <Popup
                 opened={elementSelectorOpened}
@@ -168,10 +169,13 @@ export function TasksEditPage(props) {
                     }}
                     onSave={(newElement) => {
                         setElementEditorOpened(false);
+                        let newTextAreaValue = textAreaValue.replace(`$[${editingElement.name}]`, `$$[${newElement.name}]`);
+                        setTextAreaValue(newTextAreaValue);
                         replaceObject(tasks, setTasks, activeTask, {
-                            ...tasks[activeTask], elements: replaceQuestion(tasks[activeTask].elements, editingElement.name, newElement)
+                            ...tasks[activeTask],
+                            text: newTextAreaValue,
+                            elements: replaceQuestion(tasks[activeTask].elements, editingElement.name, newElement)
                         });
-                        setTextAreaValue(textAreaValue.replace(`$[${editingElement.name}]`, `$$[${newElement.name}]`));
                     }}
                 /> }
             </Popup>
