@@ -5,10 +5,9 @@ nav {
     display: flex;
     vertical-align: middle;
     box-sizing: border-box;
-    background-color: rgba(255, 255, 255, 0.5);
+    background: #f5f5f560;
     backdrop-filter: blur(15px);
     padding: 0 15%;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
     font-family: "Roboto", sans-serif;
     font-weight: 400;
 }
@@ -67,7 +66,6 @@ nav .profile {
     margin-bottom: auto;
     height: fit-content;
     display: flex;
-    transition: background-color .25s;
     box-sizing: border-box;
     padding: 0.5rem;
     border-radius: 12px;
@@ -89,10 +87,8 @@ nav .profile > img {
 
 nav .link-btn {
     margin: auto;
-    height: 2rem;
-    padding: 0.2rem 0.8rem;
-    line-height: 1.6rem;
-    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
     border-radius: 0.8rem;
     transition: background-color .2s ease-out, box-shadow .2s ease-out;
     color: var(--text-main);
@@ -102,6 +98,15 @@ nav .link-btn {
 nav .link-btn:hover {
     background-color: white;
     box-shadow: 0 0 30px rgb(0, 0, 0, 0.05);
+}
+
+nav .profile__wrapper > .link-btn:last-child {
+    background: var(--controls-primary);
+    color: white;
+}
+
+nav .profile__wrapper > .link-btn:last-child:hover {
+    box-shadow: 10px 8px 60px rgba(120, 120, 200, 0.6);
 }
 
 .menu-dropdown__wrapper {

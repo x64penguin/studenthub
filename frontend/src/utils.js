@@ -1,13 +1,22 @@
 import { API_SERVER } from "./config";
 
 export function get(url, successCallback, errorCallback) {
-    fetch(API_SERVER + url).then((res) => res.json()).then(successCallback, (error) => {
+    function errCallback(err) {
         if (errorCallback === undefined) {
-            console.error(`GET request error: ${error}`);
+            console.error(`GET request error: ${err}`);
         } else {
-            errorCallback(error);
+            errorCallback(err);
         }
-    })
+    }
+
+    fetch(API_SERVER + url)
+        .then((res) => {
+            if (res.ok) {
+                return res.json();
+            } else {
+                errCallback(res.error);
+            }
+        }).then(successCallback, errCallback).catch(errCallback);
 }
 
 export function post(url, body, successCallback, errorCallback) {

@@ -22,7 +22,7 @@ export function TasksEditPage({test}) {
     const [elementEditorOpened, setElementEditorOpened] = useState(false);
     const [editingElement, setEditingElement] = useState(undefined);
 
-    const [textAreaValue, setTextAreaValue] = useState("");
+    const [textAreaValue, setTextAreaValue] = useState(tasks[0].text);
     const textAreaRef = useRef(null);
 
     const setActiveTask = (tid) => {
@@ -91,6 +91,7 @@ export function TasksEditPage({test}) {
             <textarea
                 ref={textAreaRef}
                 value={textAreaValue}
+                placeholder={"Текст задания"}
                 onChange={e => {
                     setTextAreaValue(e.target.value);
                     replaceObject(tasks, setTasks, activeTask, {
@@ -100,12 +101,30 @@ export function TasksEditPage({test}) {
                 className="input-default main-task-area"
             />
             <div className="task-preview">
-                <TaskView/>
+                <h3>Предпросмотр</h3>
+                <TaskView task={tasks[activeTask] && generateTask(tasks[activeTask])} onChange={() => {}}/>
             </div>
             <div className="buttons-row">
                 <Button style="secondary" onClick={() => setElementSelectorOpened(true)}>Добавить элемент</Button>
                 <Button style="secondary" onClick={() => setElementListOpened(true)}>Редактировать элемент</Button>
-                <Button style="secondary">Удалить</Button>
+                <Button style="secondary" onClick={() => {
+                    if (tasks.length > 0) {
+                        let newTasks = [];
+                        tasks.forEach((t, idx) => {
+                            if (idx !== activeTask) {
+                                newTasks.push(t);
+                            }
+                        });
+                        if (tasks.length === 1) {
+                            newTasks.push({text: "", elements: []});
+                            setTasks(newTasks);
+                            setActiveTask(0);
+                            return;
+                        }
+                        setTasks(newTasks);
+                        setActiveTask(activeTask-1);
+                    }
+                }}>Удалить</Button>
                 <Button onClick={() =>
                     api_post("upload_tasks/" + test.id, tasks.map(generateTask))}
                 >
@@ -223,23 +242,30 @@ function ElementEditor({ element, onSave, validator }) {
     const nameEdit = <Input
         label="Название"
         key="label"
+        placeholder="Название элемента (носит служебный характер)"
         invalid={validator(editedElement.name)}
         value={element.name}
         onChange={e => setEditedElement({...editedElement, name: e.target.value})}
     />;
 
-    const inlineMode = <Checkbox
-        key="inline-mode"
-        onChange={e => setEditedElement({...editedElement, inline: e})}
-    >
-        Внутристрочный
-    </Checkbox>;
-
     const result = [nameEdit];
 
     switch (element.qtype) {
         case "input":
-            result.push(inlineMode);
+            result.push(<Checkbox
+                key="inline-mode"
+                defaultValue={element.inline}
+                onChange={e => setEditedElement({...editedElement, inline: e})}
+            >
+                Внутристрочный (вставка слова)
+            </Checkbox>);
+            result.push(<Checkbox
+                key="int-input"
+                defaultValue={element.int}
+                onChange={newValue => setEditedElement({...editedElement, int: newValue})}
+            >
+                Число
+            </Checkbox>);
             result.push(<Input
                 key="right-answer"
                 label="Правильный ответ"
@@ -248,7 +274,6 @@ function ElementEditor({ element, onSave, validator }) {
             />);
             break;
         case "select":
-            result.push(inlineMode);
             result.push(<Checkbox
                 key="multiple"
                 onChange={e => setEditedElement({...editedElement, multiselect: e})}>
@@ -284,6 +309,7 @@ function ElementEditor({ element, onSave, validator }) {
                 }}
             />);
             result.push(<ReorderTask
+                key="reorder-task"
                 variants={editedElement.right}
                 onChange={nv => setEditedElement({...editedElement, right: nv})}
             />);
@@ -334,13 +360,14 @@ function ElementEditor({ element, onSave, validator }) {
                     ]);
                 }}
             />);
-            result.push(<ConnectTask answer={connectRight} onChange={setConnectRight}/>);
+            result.push(<ConnectTask key="connect-task" answer={connectRight} onChange={setConnectRight}/>);
             break;
         default:
             break;
     }
 
     result.push(<Button
+        key="save-btn"
         onClick={() => {
             if (editedElement.qtype === "connect") {
                 return onSave({...editedElement, right: connectRight});

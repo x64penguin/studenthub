@@ -3,7 +3,7 @@ import "./Select.css";
 import classNames from "classnames";
 
 export function SelectTask({element, className, onChange}) {
-    const [selectedValues, setSelectedValues] = useState(element.right);
+    const [selectedValues, setSelectedValues] = useState({});
 
     return <div className={className}>
         {

@@ -1,5 +1,3 @@
-import {v4 as uuid} from "uuid";
-
 function parseTaskElements(str) {
     const matches = str.match(/\$\[.+?]/g);
 
@@ -29,7 +27,14 @@ export function generateTask({text, elements}) {
         const substring = text.substring(startIndex, name.index);
         const element = elements.find(e => e.name === name.value);
 
-        task.push(substring);
+        if (substring !== '') {
+            task.push(substring);
+        }
+        if (!element) {
+            task.push("Неверное название элемента");
+            startIndex = name.index + name.value.length + 3;
+            continue;
+        }
         if (element.qtype === "connect") {
             task.push({...element, right: element.right[1]});
         } else {
@@ -64,13 +69,12 @@ export function formatTask(task) {
        }
     });
 
-    return task;
+    return formatted;
 }
 
 export function createBaseQuestion(type) {
-    const id = uuid();
     const baseQuestion = {
-        name: id,
+        name: "",
         inline: false,
         points: 1
     }
@@ -79,7 +83,7 @@ export function createBaseQuestion(type) {
             return {
                 ...baseQuestion,
                 qtype: "input",
-                type: "str",
+                int: false,
                 right: ""
             }
         case "Выбор":

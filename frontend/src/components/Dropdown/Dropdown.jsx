@@ -14,7 +14,7 @@ export function Dropdown(props) {
     let dropClass = classNames({
         "block-default": true,
         "dropdown": true,
-        "hidden": !opened
+        "dd-hidden": !opened
     })
 
     return <div onClick={onClick} className={className + dropClass}>

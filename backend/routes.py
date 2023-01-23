@@ -1,3 +1,4 @@
+import datetime
 import json
 import uuid
 
@@ -5,9 +6,9 @@ from app import app, db
 import os
 import utils
 from flask import request, send_file, Response
-from models import get_user, User, UserSession, Test
+from models import get_user, User, UserSession, Test, TestSolution
 from authorization import get_current_user, login_required, login_user, logout_user
-from shtest import SHTest, TESTS_PATH
+from shtest import TESTS_PATH
 
 
 @app.route("/api/validate_username", methods=["POST"])
@@ -69,7 +70,6 @@ def api_logout(user):
     return {"response": "success"}, 200
 
 
-
 @app.route("/api/user/<int:uid>")
 def api_find_user(uid):
     current_user = get_current_user()
@@ -124,7 +124,7 @@ def api_edit_profile(current_user, uid):
 
 @app.route("/api/logout_ip/<string:ip>")
 @login_required
-def api_logout_ip(user, ip):
+def api_logout_ip(_, ip):
     user_session = UserSession.query.filter_by(ip=ip).first()
 
     if user_session is None:
@@ -177,6 +177,7 @@ def get_test(test_id):
 
     if current_user is not None and current_user.id == test.author_id:
         return test.safe_json(), 200
+
     return test.json(), 200
 
 
@@ -194,7 +195,7 @@ def edit_test(user, test_id):
     test.description = request.form["description"]
 
     if len(request.files) != 0:
-        ...  #TODO: upload image
+        ...  # TODO: upload image
 
     return {"response": "success"}, 200
 
@@ -204,16 +205,164 @@ def edit_test(user, test_id):
 def upload_tasks(user, test_id):
     test = Test.query.filter_by(id=test_id).first()
     if test is None:
-        return {"response", 404}, 404
+        return {"response": 404}, 404
 
     if user.id != test.author_id:
         return {"response", "unauthorized"}, 401
 
-    file = open(os.path.join(TESTS_PATH, test.uuid + ".json"), "w", encoding="utf8")
+    file = open(os.path.join(TESTS_PATH, str(test.id) + ".json"), "w", encoding="utf8")
     file.write(json.dumps(request.json))
     file.close()
 
     return {"response": "success"}, 200
+
+
+@app.route("/api/start_test/<int:test_id>")
+@login_required
+def start_test(user, test_id):
+    find_solution = TestSolution.query.filter_by(user_id=user.id, in_progress=True).first()
+
+    if find_solution is not None:
+        return {
+            "response": "already started",
+            "name": find_solution.test.name,
+            "id": find_solution.id
+        }, 200
+
+    new_solution = TestSolution(user_id=user.id, in_progress=True, test_id=test_id, start_time=datetime.datetime.now())
+    db.session.add(new_solution)
+    db.session.commit()
+
+    solution_file = open(os.path.join(TESTS_PATH, "solutions", str(new_solution.id) + ".json"), "w")
+    solution_file.write(json.dumps({
+        "test": test_id,
+        "state": "running",
+        "skipped": [],
+        "answered": {},
+        "result": 0,
+    }))
+    solution_file.close()
+
+    return {
+        "response": "started",
+        "id": new_solution.id
+    }, 200
+
+
+@app.route("/api/solution/<int:solution_id>")
+@login_required
+def get_solution(user, solution_id):
+    solution = TestSolution.query.filter_by(id=solution_id).first()
+
+    if solution.user_id != user.id:
+        return {
+            "response": "unauthorized",
+        }, 401
+
+    solution_json = solution.json()
+
+    next_task = 0
+    if solution_json["state"] == "running":
+        if solution_json["answered"]:
+            next_task = max(map(int, solution_json["answered"].keys())) + 1
+    elif solution_json["state"] == "running skipped":
+        next_task = min(solution_json["skipped"])
+    elif solution_json["state"] == "complete":
+        test_db = Test.query.filter_by(id=solution.test_id).first()
+        return {
+            "state": solution_json["state"],
+            "result": list(solution_json["result"]),
+            "test": test_db.name,
+        }, 200
+
+    with open(os.path.join(TESTS_PATH, str(solution.test_id) + ".json")) as f:
+        tasks = json.loads(f.read())
+        task = tasks[next_task]
+        for el in task:
+            if type(el) == dict:
+                el["right"] = None
+
+    return {
+        "state": solution_json["state"],
+        "answered": list(solution_json["answered"].keys()),
+        "skipped": solution_json["skipped"],
+        "total_tasks": len(tasks),
+        "current_task": next_task,
+        "task": task
+    }, 200
+
+
+@app.route("/api/submit_solution/<int:solution_id>", methods=["POST"])
+@login_required
+def submit_solution(user, solution_id):
+    solution = TestSolution.query.filter_by(id=solution_id).first()
+
+    if solution.user_id != user.id:
+        return {
+            "response": "unauthorized",
+        }, 401
+
+    solution_json = solution.json()
+
+    if solution_json["state"] == "complete":
+        return {
+            "response": "ended",
+        }, 403
+
+    submitted_task = request.json
+
+    if submitted_task.get("skip"):
+        solution_json["skipped"].append(submitted_task["id"])
+    else:
+        solution_json["answered"][submitted_task["id"]] = submitted_task["answer"]
+
+    with open(os.path.join(TESTS_PATH, str(solution.test_id) + ".json"), "r") as f:
+        test = json.load(f)
+
+    if submitted_task["id"] == len(test) - 1:
+        if solution_json["state"] == "running" and len(solution_json["skipped"]):
+            solution_json["state"] = "running skipped"
+        else:
+            solution.in_progress = False
+            solution.end_time = datetime.datetime.now()
+            db.session.commit()
+            solution_json["state"] = "complete"
+
+    next_task = 0
+    if solution_json["state"] == "running":
+        if solution_json["answered"]:
+            next_task = max(solution_json["answered"].keys()) + 1
+    elif solution_json["state"] == "running skipped":
+        next_task = min(solution_json["skipped"])
+    elif solution_json["state"] == "complete":
+        solution_json["result"] = list(utils.generate_results(test, solution_json["answered"]))
+
+        with open(os.path.join(TESTS_PATH, "solutions", str(solution_id) + ".json"), "w") as f:
+            f.write(json.dumps(solution_json))
+
+        test_db = Test.query.filter_by(id=solution.test_id).first()
+        return {
+            "state": solution_json["state"],
+            "result": list(solution_json["result"]),
+            "test": test_db.name,
+        }, 200
+
+    task = test[next_task]
+    for el in task:
+        if type(el) == dict:
+            el["right"] = None
+
+    with open(os.path.join(TESTS_PATH, "solutions", str(solution_id) + ".json"), "w") as f:
+        f.write(json.dumps(solution_json))
+
+    return {
+        "state": solution_json["state"],
+        "answered": list(solution_json["answered"].keys()),
+        "skipped": solution_json["skipped"],
+        "total_tasks": len(test),
+        "current_task": next_task,
+        "task": task
+    }, 200
 
 
 @app.after_request

@@ -2,12 +2,14 @@ export function TextArea(props) {
     const {
         label,
         className = "",
-        onChange
+        onChange,
+        placeholder
     } = props;
 
     if (!label) {
         return (
             <textarea
+                placeholder={placeholder}
                 className={"input-default " + className}
                 onChange={onChange}
             />

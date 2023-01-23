@@ -71,6 +71,21 @@
     width: 100%;
 }
 
+.buttons-row {
+    display: flex;
+    margin-top: var(--default-margin);
+    width: 100%;
+    justify-content: space-between;
+}
+
+.buttons-row_ar {
+    display: flex;
+    margin-top: var(--default-margin);
+    width: 100%;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
 @media (max-width: 768px) {
     .block-default {
         padding: 0.9rem;

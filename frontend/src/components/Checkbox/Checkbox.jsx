@@ -1,20 +1,20 @@
 import { useState } from "react"
 import "./Checkbox.css"
 
-export function Checkbox(props) {
-    const [state, setState] = useState(false);
+export function Checkbox({onChange, defaultValue = false, children}) {
+    const [state, setState] = useState(defaultValue);
 
     const onClick = () => {   
         const newState = !state;     
         setState(newState);
 
-        if (props.onChange) {
-            props.onChange(newState);
+        if (onChange) {
+            onChange(newState);
         }
     };
 
     return <div className="checkbox-group">
-        <input type="checkbox" onClick={onClick}/>
-        <span>{ props.children }</span>
+        <input type="checkbox" onChange={onClick} checked={state}/>
+        <span>{ children }</span>
     </div>
 }

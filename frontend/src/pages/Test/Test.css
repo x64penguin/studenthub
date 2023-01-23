@@ -1,0 +1,34 @@
+.test__page {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.test__title {
+    margin-top: 0;
+    margin-bottom: var(--default-margin);
+}
+
+.start-test_block {
+    margin-top: var(--default-margin);
+    margin-left: auto;
+    width: fit-content;
+}
+
+.already-started-alert {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+    margin: 2rem auto;
+    transition: opacity 0.2s;
+}
+
+.already-started-alert > div {
+    display: flex;
+    gap: 12px;
+}
+
+.alert_hidden {
+    opacity: 0;
+    display: none;
+}

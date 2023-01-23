@@ -1,3 +1,13 @@
 .task-view {
+    margin: var(--default-margin) 0;
+}
 
+.task-inline {
+    display: inline-block;
+    margin: 0 0.5rem;
+    width: 300px;
+}
+
+.task-view .task {
+    margin-top: var(--default-margin);
 }

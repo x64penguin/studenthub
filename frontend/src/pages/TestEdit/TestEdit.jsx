@@ -25,6 +25,7 @@ export function TestEdit() {
     });
 
     useEffect(() => {
+        document.title = "StudentHub - создание теста";
         api_get("test/" + testId, (data) => {
             setTest(data);
             setForm({
