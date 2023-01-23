@@ -21,11 +21,11 @@
 
 .task-bar__item.answered {
     color: white;
-    background: var(--controls-primary);
+    background: #6fbeff;
 }
 
 .task-bar__item.skipped {
-    background: #6fbeff;
+    background: #c4c4c4;
 }
 
 .task-bar__item.active {

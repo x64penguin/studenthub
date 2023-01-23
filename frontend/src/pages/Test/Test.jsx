@@ -55,7 +55,7 @@ export function TestPage() {
             <span>У вас есть незаконченный тест: {startedTest && startedTest.name}</span>
             <div>
                 <Button style="secondary">Завершить</Button>
-                <Button style="secondary">Продолжить</Button>
+                <Button style="secondary" onClick={() => navigate("/solution/" + startedTest.id)}>Продолжить</Button>
             </div>
         </div>
     </>;

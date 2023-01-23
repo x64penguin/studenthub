@@ -265,6 +265,8 @@ def get_solution(user, solution_id):
     if solution_json["state"] == "running":
         if solution_json["answered"]:
             next_task = max(map(int, solution_json["answered"].keys())) + 1
+        if solution_json["skipped"]:
+            next_task = max(next_task, max(solution_json["skipped"]) + 1)
     elif solution_json["state"] == "running skipped":
         next_task = min(solution_json["skipped"])
     elif solution_json["state"] == "complete":
@@ -284,7 +286,7 @@ def get_solution(user, solution_id):
 
     return {
         "state": solution_json["state"],
-        "answered": list(solution_json["answered"].keys()),
+        "answered": list(map(int, solution_json["answered"].keys())),
         "skipped": solution_json["skipped"],
         "total_tasks": len(tasks),
         "current_task": next_task,
@@ -315,6 +317,10 @@ def submit_solution(user, solution_id):
         solution_json["skipped"].append(submitted_task["id"])
     else:
         solution_json["answered"][submitted_task["id"]] = submitted_task["answer"]
+        try:
+            solution_json["skipped"].remove(submitted_task["id"])
+        except ValueError:
+            ...  # don't do anything
 
     with open(os.path.join(TESTS_PATH, str(solution.test_id) + ".json"), "r") as f:
         test = json.load(f)
@@ -331,7 +337,9 @@ def submit_solution(user, solution_id):
     next_task = 0
     if solution_json["state"] == "running":
         if solution_json["answered"]:
-            next_task = max(solution_json["answered"].keys()) + 1
+            next_task = max(map(int, solution_json["answered"].keys())) + 1
+        if solution_json["skipped"]:
+            next_task = max(next_task, max(solution_json["skipped"]) + 1)
     elif solution_json["state"] == "running skipped":
         next_task = min(solution_json["skipped"])
     elif solution_json["state"] == "complete":
@@ -357,7 +365,7 @@ def submit_solution(user, solution_id):
 
     return {
         "state": solution_json["state"],
-        "answered": list(solution_json["answered"].keys()),
+        "answered": list(map(int, solution_json["answered"].keys())),
         "skipped": solution_json["skipped"],
         "total_tasks": len(test),
         "current_task": next_task,

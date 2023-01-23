@@ -36,8 +36,8 @@ export function Solution() {
                                 classNames({
                                     "task-bar__item": true,
                                     "active": task === solution.current_task,
-                                    "answered": solution.answered.indexOf(toString(task)) !== -1,
-                                    "skipped": solution.skipped.indexOf(toString(task)) !== -1
+                                    "answered": solution.answered.indexOf(task) !== -1,
+                                    "skipped": solution.skipped.indexOf(task) !== -1
                                 })}>{task + 1}
                         </span>)
                         }
@@ -47,7 +47,20 @@ export function Solution() {
             </div>
             <TaskView className="block-default" task={solution.task} onChange={setAnswer}/>
             <div className="buttons-row_ar">
-                <Button style="secondary">Пропустить</Button>
+                <Button style="secondary" onClick={() => {
+                    api_post(
+                        "submit_solution/" + solutionId,
+                        {
+                            "id": solution.current_task,
+                            "answer": null,
+                            "skip": true
+                        },
+                        (data) => {
+                            setSolution(data);
+                            setAnswer({});
+                        }
+                    );
+                }}>Пропустить</Button>
                 <Button onClick={() => {
                     api_post(
                         "submit_solution/" + solutionId,

@@ -72,6 +72,8 @@ export function TaskView(props) {
                             />;
                     }
                 }
+
+                return null;
             })
         }
     </div>;
