@@ -7,6 +7,7 @@ import {useSelector} from "react-redux";
 import {selectUserAuthenticated} from "../../store/User/selectors";
 import {Button} from "../../components/Button/Button";
 import classNames from "classnames";
+import {ProgressBar} from "../../components/ProgressBar/ProgressBar";
 
 export function TestPage() {
     const {testId} = useParams();
@@ -26,10 +27,38 @@ export function TestPage() {
         return <Loading/>;
     }
 
+    function Result() {
+        if (test.solutions.length === 0) {
+            return null;
+        }
+
+        let bestSolution = test.solutions[0];
+
+        for (let i = 0; i < test.solutions.length; i++) {
+            const solution = test.solutions[i];
+            if (solution.state !== "complete") {
+                return <div className="not-ended-block">
+                    <span>У вас есть незаконченное решение</span>
+                    <Button style="secondary" onClick={() => navigate("/solution/" + solution.id)}>Продолжить</Button>
+                </div>;
+            }
+            if (solution.result[0] > bestSolution.result[0]) {
+                bestSolution = solution;
+            }
+        }
+        const percentage = Math.round(bestSolution.result[0]/bestSolution.result[1]*100);
+
+        return <div className="result-block">
+            <span>Лучший результат: {bestSolution.result[0]} баллов из {bestSolution.result[1]} ({percentage}%)</span>
+            <ProgressBar percentage={percentage}/>
+        </div>
+    }
+
     return <>
         <div className="block-default test__page">
             <h1 className="test__title">{test.name}</h1>
             <span>{test.description}</span>
+            <Result/>
             <div className="start-test_block">
                 { userAuth ?
                     <Button className="start-test" onClick={() => {

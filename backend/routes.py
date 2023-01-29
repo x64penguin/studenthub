@@ -6,9 +6,8 @@ from app import app, db
 import os
 import utils
 from flask import request, send_file, Response
-from models import get_user, User, UserSession, Test, TestSolution
+from models import get_user, User, UserSession, Test, TestSolution, TESTS_PATH
 from authorization import get_current_user, login_required, login_user, logout_user
-from shtest import TESTS_PATH
 
 
 @app.route("/api/validate_username", methods=["POST"])
@@ -175,10 +174,23 @@ def get_test(test_id):
             "response": 404
         }, 404
 
-    if current_user is not None and current_user.id == test.author_id:
-        return test.safe_json(), 200
+    if current_user is not None:
+        if current_user.id == test.author_id and request.args.get("include_tasks") == "true":
+            return test.safe_json(), 200
+        else:
+            result = test.json()
+            result["solutions"] = list(map(TestSolution.json, TestSolution.query.filter_by(user_id=current_user.id, test_id=test_id).all()))
+            return result, 200
 
     return test.json(), 200
+
+
+@app.route("/api/best_solution/<int:test_id>")
+@login_required
+def best_solution(user, test_id):
+    test: Test = Test.query.filter_by(id=test_id)
+
+
 
 
 @app.route("/api/edit_test/<int:test_id>", methods=["POST"])
@@ -259,7 +271,8 @@ def get_solution(user, solution_id):
             "response": "unauthorized",
         }, 401
 
-    solution_json = solution.json()
+    with open(os.path.join(TESTS_PATH, "solutions", str(solution.id) + ".json"), "r") as f:
+        solution_json = json.loads(f.read())
 
     next_task = 0
     if solution_json["state"] == "running":
@@ -304,7 +317,8 @@ def submit_solution(user, solution_id):
             "response": "unauthorized",
         }, 401
 
-    solution_json = solution.json()
+    with open(os.path.join(TESTS_PATH, "solutions", str(solution.id) + ".json"), "r") as f:
+        solution_json = json.loads(f.read())
 
     if solution_json["state"] == "complete":
         return {
@@ -316,7 +330,7 @@ def submit_solution(user, solution_id):
     if submitted_task.get("skip"):
         solution_json["skipped"].append(submitted_task["id"])
     else:
-        solution_json["answered"][submitted_task["id"]] = submitted_task["answer"]
+        solution_json["answered"][str(submitted_task["id"])] = submitted_task["answer"]
         try:
             solution_json["skipped"].remove(submitted_task["id"])
         except ValueError:
@@ -325,7 +339,7 @@ def submit_solution(user, solution_id):
     with open(os.path.join(TESTS_PATH, str(solution.test_id) + ".json"), "r") as f:
         test = json.load(f)
 
-    if submitted_task["id"] == len(test) - 1:
+    if len(solution_json["answered"]) == len(test):
         if solution_json["state"] == "running" and len(solution_json["skipped"]):
             solution_json["state"] = "running skipped"
         else:

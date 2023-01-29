@@ -32,3 +32,15 @@
     opacity: 0;
     display: none;
 }
+
+.not-ended-block {
+    margin-top: var(--default-margin);
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 12px;
+}
+
+.result-block {
+    margin-top: var(--default-margin);
+}

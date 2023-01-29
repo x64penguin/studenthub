@@ -105,8 +105,8 @@ export function TasksEditPage({test}) {
                 <TaskView task={tasks[activeTask] && generateTask(tasks[activeTask])} onChange={() => {}}/>
             </div>
             <div className="buttons-row">
-                <Button style="secondary" onClick={() => setElementSelectorOpened(true)}>Добавить элемент</Button>
-                <Button style="secondary" onClick={() => setElementListOpened(true)}>Редактировать элемент</Button>
+                <Button style="secondary" onClick={() => setElementSelectorOpened(true)}>Добавить вопрос</Button>
+                <Button style="secondary" onClick={() => setElementListOpened(true)}>Редактировать вопрос</Button>
                 <Button style="secondary" onClick={() => {
                     if (tasks.length > 0) {
                         let newTasks = [];
@@ -126,15 +126,14 @@ export function TasksEditPage({test}) {
                     }
                 }}>Удалить</Button>
                 <Button onClick={() =>
-                    api_post("upload_tasks/" + test.id, tasks.map(generateTask))}
-                >
+                    api_post("upload_tasks/" + test.id, tasks.map(generateTask))}>
                     Сохранить
                 </Button>
             </div>
             <Popup
                 opened={elementSelectorOpened}
                 onClose={() => setElementSelectorOpened(false)}
-                label="Добавить элемент"
+                label="Добавить вопрос"
                 className="element-selector"
             >
                 <QuestionElement label="Ввод"/>
@@ -145,7 +144,7 @@ export function TasksEditPage({test}) {
             <Popup
                 opened={elementListOpened}
                 onClose={() => setElementListOpened(false)}
-                label="Элементы"
+                label="Вопросы"
                 className="element-editor-list"
             >
                 {
@@ -167,7 +166,7 @@ export function TasksEditPage({test}) {
             <Popup
                 opened={elementEditorOpened}
                 onClose={() => setElementEditorOpened(false)}
-                label="Редактировать элемент"
+                label="Редактировать вопрос"
                 className="element-editor"
             >
                 { elementEditorOpened &&

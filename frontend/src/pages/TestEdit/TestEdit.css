@@ -40,6 +40,27 @@
     margin-left: auto;
 }
 
+.solution-info {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    background: #f3f3f3;
+    border-radius: 12px;
+    padding: 0.7rem;
+    gap: 12px;
+}
+
+.solution-info.not-expanded {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.solution-info > .result {
+    display: flex;
+    align-items: center;
+}
+
 @media (max-width: 768px) {
     .test-edit__page {
         width: 95%;

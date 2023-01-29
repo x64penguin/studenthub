@@ -21,8 +21,8 @@ class User(UserMixin, db.Model):
     account_type = db.Column(db.Integer)
     password_hash = db.Column(db.String(128))
     joined: date = db.Column(db.Date, default=date.today())
-    sessions = db.relationship("UserSession", backref="user", lazy="dynamic")
-    tests_created = db.relationship("Test", backref="user", lazy="dynamic")
+    sessions = db.relationship("UserSession", backref="user")
+    solutions = db.relationship("TestSolution", backref="user")
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -88,6 +88,8 @@ class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    author = db.relationship("User", backref="tests_created")
+    solutions = db.relationship("TestSolution", backref="test")
     description = db.Column(db.String(128))
 
     def json(self):
@@ -95,7 +97,7 @@ class Test(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "author": self.author_id,
+            "author": self.author_id
         }
 
     def safe_json(self):
@@ -104,6 +106,12 @@ class Test(db.Model):
 
         base_json = self.json()
         base_json["tasks"] = tasks
+        base_json["solutions"] = {}
+        for x in self.solutions:
+            if x.user.name not in base_json["solutions"]:
+                base_json["solutions"][x.user.name] = [x.json()]
+            else:
+                base_json["solutions"][x.user.name].append(x.json())
 
         return base_json
 
@@ -120,8 +128,11 @@ class TestSolution(db.Model):
         with open(os.path.join(TESTS_PATH, "solutions", str(self.id) + ".json"), "r") as f:
             solution = json.loads(f.read())
 
-        return solution
+        solution["id"] = self.id
+        solution["user"] = self.user_id
+        solution["start_time"] = self.start_time
+        solution["end_time"] = self.end_time
+        if self.end_time:
+            solution["delta"] = str(self.end_time - self.start_time)
 
-    @property
-    def test(self):
-        return Test.query.filter_by(id=self.test_id).first()
+        return solution

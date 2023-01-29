@@ -6,6 +6,7 @@ import "./Solution.css";
 import classNames from "classnames";
 import {TaskView} from "../../components/TaskView/TaskView";
 import {Button} from "../../components/Button/Button";
+import {ProgressBar} from "../../components/ProgressBar/ProgressBar";
 
 export function Solution() {
     const navigate = useNavigate();
@@ -85,11 +86,7 @@ export function Solution() {
         return <div className="solution-page block-default">
             <h2 style={{marginTop: 0}}>{solution.test}</h2>
             <h4>Ваш результат: {solution.result[0]} баллов из {solution.result[1]} ({percentage}%)</h4>
-            <div className="result-line_bg">
-                <div className="result-line" style={{width: percentage + "%"}}>
-
-                </div>
-            </div>
+            <ProgressBar percentage={percentage}/>
         </div>;
     }
 }
