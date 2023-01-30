@@ -88,9 +88,9 @@
     margin-left: 2rem;
 }
 
-.profile__created-test > .description > h2 {
-    margin-top: 0;
-    margin-bottom: 0.25rem;
+.profile__created-test > .description h2 {
+    margin: 0 0 0.25rem;
+    color: var(--text-main);
 }
 
 .created-test__button {

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {Loading} from "../../components/Loading/Loading";
 import {api_get} from "../../utils";
 import "./Profile.css";
@@ -42,7 +42,7 @@ export function ProfilePage() {
         return <div className="profile__created-test">
             <img alt="icon" src={`${API_SERVER}/static/test_icon/${test.id}`}/>
             <div className="description">
-                <h2>{test.name}</h2>
+                <Link to={"/test/" + test.id}><h2>{test.name}</h2></Link>
                 <span>{test.description}</span>
             </div>
             {
