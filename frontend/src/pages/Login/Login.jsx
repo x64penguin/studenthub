@@ -26,7 +26,7 @@ export function Login(props) {
         }
 
         api_post("login", request, (data) => {
-            if (data.response == "success") {
+            if (data.response === "success") {
                 dispatch(userSlice.actions.login(data));
 
                 return navigate(searchParams.get("redirect") || "/");
@@ -39,8 +39,8 @@ export function Login(props) {
     return <div className="block-default login__wrapper">
         <form onSubmit={onSubmit}>
             <h1 className="form-label">Авторизация</h1>
-            <Input label="Имя пользователя" onChange={(event) => setUsername(event.target.value)}/>
-            <Input label="Пароль" type="password" onChange={(event) => setPassword(event.target.value)}/>
+            <Input autocomplete="username" label="Имя пользователя" onChange={(event) => setUsername(event.target.value)}/>
+            <Input autocomplete="current-password" label="Пароль" type="password" onChange={(event) => setPassword(event.target.value)}/>
             <ServerError error={serverError}/>
             <Button type="submit">Войти</Button>
         </form>

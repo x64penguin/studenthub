@@ -185,14 +185,6 @@ def get_test(test_id):
     return test.json(), 200
 
 
-@app.route("/api/best_solution/<int:test_id>")
-@login_required
-def best_solution(user, test_id):
-    test: Test = Test.query.filter_by(id=test_id)
-
-
-
-
 @app.route("/api/edit_test/<int:test_id>", methods=["POST"])
 @login_required
 def edit_test(user, test_id):

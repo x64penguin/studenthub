@@ -4,6 +4,7 @@ import { Layout } from "./components/Layout/Layout";
 import { store } from "./store";
 import "./App.css";
 import "./common.css";
+import "react-circular-progressbar/dist/styles.css";
 import { Login } from "./pages/Login/Login";
 import { Register } from "./pages/Register/Register";
 import { ProfilePage } from "./pages/Profile/Profile";
@@ -13,6 +14,7 @@ import { CreateTest } from "./pages/CreateTest/CreateTest";
 import {TestEdit} from "./pages/TestEdit/TestEdit";
 import {TestPage} from "./pages/Test/Test";
 import {Solution} from "./pages/Solution/Solution";
+import {Index} from "./pages/Index";
 
 function App() {
     return (
@@ -20,7 +22,7 @@ function App() {
             <BrowserRouter>
                 <Layout>
                     <Routes>
-                        <Route index element={"index"}/>
+                        <Route index element={<Index/>}/>
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/register" element={<Register/>}/>
                         <Route path="/user/:userId" element={<ProfilePage/>}/>

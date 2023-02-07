@@ -30,15 +30,7 @@ export function ProfilePage() {
         return <Loading />;
     }
 
-    const ProfileStats = ({label, stat}) => {
-        return <>
-            <span className="profile-stats__label">{label}:</span>
-            <span className="profile-stats">{stat}</span>
-        </>
-    }
-
     const renderTestCard = (test) => {
-        console.log(test);
         return <div className="profile__created-test">
             <img alt="icon" src={`${API_SERVER}/static/test_icon/${test.id}`}/>
             <div className="description">
@@ -51,7 +43,7 @@ export function ProfilePage() {
                         link={"/test/" + test.id + "/edit"}
                         className="created-test__button">
                             Редактировать
-                    </LinkButton> : undefined
+                    </LinkButton> : null
             }
         </div>
     }
@@ -72,10 +64,7 @@ export function ProfilePage() {
                 </div>
                 <h2>{user.name}</h2>
             </div>
-            <div className="profile-page__stats">
-                <ProfileStats label="Присоединился" stat={user.joined}/>
-                <ProfileStats label="Решено тестов" stat={256}/>
-            </div>
+            <ProfileStats/>
             <TabSwitch style="secondary" mode="horizontal" onChange={n => setActiveTab(n)}>
                 <TabLabel>Пройденные тесты</TabLabel>
                 <TabLabel>Созданные тесты</TabLabel>                
@@ -95,4 +84,8 @@ export function ProfilePage() {
             }
         </div>
     );
+}
+
+function ProfileStats({profile}) {
+
 }

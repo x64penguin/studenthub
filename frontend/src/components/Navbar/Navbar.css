@@ -90,7 +90,7 @@ nav .link-btn {
     padding: 0.5rem 1rem;
     font-size: 1.1rem;
     border-radius: 0.8rem;
-    transition: background-color .2s ease-out, box-shadow .2s ease-out;
+    transition: background-color .3s ease-out, box-shadow .3s ease-out;
     color: var(--text-main);
     cursor: pointer;
 }
@@ -106,7 +106,7 @@ nav .profile__wrapper > .link-btn:last-child {
 }
 
 nav .profile__wrapper > .link-btn:last-child:hover {
-    box-shadow: 10px 8px 60px rgba(120, 120, 200, 0.6);
+    box-shadow: 10px 8px 60px rgba(120, 120, 200, 0.5);
 }
 
 .menu-dropdown__wrapper {

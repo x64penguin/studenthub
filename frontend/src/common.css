@@ -14,7 +14,7 @@
     background: #fcfcfc;
     border-radius: 18px;
     padding: var(--default-padding);
-    box-shadow: 0 0 50px rgba(40, 40, 80, 0.03);
+    box-shadow: 4px 6px 40px rgba(40, 40, 80, 0.05);
 }
 
 .form-label {

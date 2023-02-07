@@ -8,6 +8,7 @@ export function Input({
         type = "text",
         value = "",
         className = "",
+        autocomplete = "off",
         onChange
     }) {
 
@@ -24,6 +25,7 @@ export function Input({
                 placeholder={placeholder}
                 onChange={onChange}
                 defaultValue={value || ""}
+                autoComplete={autocomplete}
             />
         );
     } else {
@@ -36,6 +38,7 @@ export function Input({
                     placeholder={placeholder}
                     onChange={onChange}
                     defaultValue={value || ""}
+                    autoComplete={autocomplete}
                 />
             </div>
         );
