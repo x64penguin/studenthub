@@ -85,7 +85,10 @@ function Result({test}) {
 
     return <div className="result__wrapper">
         <div className="selected_results">
-            <div className="result-block">
+            <div
+                className="result-block"
+                onClick={() => navigate("/solution/" + lastSolution.id)}
+            >
                 <div>
                     <h3>Последний результат</h3>
                     <span
@@ -98,7 +101,10 @@ function Result({test}) {
                 </div>
                 <CircleBar percentage={lastSolutionPercentage}/>
             </div>
-            <div className="result-block">
+            <div
+                className="result-block"
+                onClick={() => navigate("/solution/" + bestSolution.id)}
+            >
                 <div>
                     <h3>Лучший результат</h3>
                     <span
@@ -111,6 +117,22 @@ function Result({test}) {
                 </div>
                 <CircleBar percentage={bestSolutionPercentage}/>
             </div>
+        </div>
+        <div>
+            {
+                test.solutions.map((el, idx) => {
+                    return <div
+                        key={idx}
+                        className="other-result"
+                        style={{marginTop: "1rem"}}
+                        onClick={() => navigate("/solution/" + el.id)}
+                    >
+                        <h3 style={{margin: "0"}}>Решение {idx + 1}</h3>
+                        <span style={{marginLeft: "1rem"}}>Время: {el.delta}</span>
+                        <h3 style={{margin: "0 0 0 auto"}}>{Math.round(el.result[0] / el.result[1] * 100)}%</h3>
+                    </div>;
+                })
+            }
         </div>
     </div>
 }

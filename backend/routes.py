@@ -279,7 +279,7 @@ def get_solution(user, solution_id):
         return {
             "state": solution_json["state"],
             "result": list(solution_json["result"]),
-            "test": test_db.name,
+            "test": test_db.safe_json(),
         }, 200
 
     with open(os.path.join(TESTS_PATH, str(solution.test_id) + ".json")) as f:

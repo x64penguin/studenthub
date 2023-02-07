@@ -57,11 +57,21 @@
     background: #0067ff;
     border-radius: 1rem;
     padding: var(--default-padding);
+    cursor: pointer;
 }
 
 .result__wrapper .result-block h3 {
     color: white;
     margin: 0;
+}
+
+.result__wrapper .other-result {
+    display: flex;
+    background: white;
+    border-radius: 1rem;
+    padding: var(--default-padding);
+    align-items: center;
+    cursor: pointer;
 }
 
 @media (max-width: 768px) {

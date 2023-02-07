@@ -50,6 +50,7 @@ nav {
     height: 100%;
     gap: 0.5rem;
     margin-right: 1rem;
+    margin-left: auto;
 }
 
 nav .profile__wrapper {

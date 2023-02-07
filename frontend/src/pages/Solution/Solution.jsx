@@ -82,11 +82,16 @@ export function Solution() {
             </div>
         </div>;
     } else {
-        const percentage = Math.round(solution.result[0]/solution.result[1]*100);
-        return <div className="solution-page block-default">
-            <h2 style={{marginTop: 0}}>{solution.test}</h2>
-            <h4>Ваш результат: {solution.result[0]} баллов из {solution.result[1]} ({percentage}%)</h4>
-            <ProgressBar percentage={percentage}/>
-        </div>;
+        return <SolutionResults solution={solution}/>
     }
+}
+
+function SolutionResults({solution}) {
+    const [taskId, setTaskId] = useState(0);
+
+    return <div className="solution-result__wrapper">
+        <div className="solution-result__bar">
+
+        </div>
+    </div>;
 }

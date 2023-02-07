@@ -82,11 +82,9 @@ export function Navbar() {
     return (
         <nav>
             <Link to="/" className="nav__title">studenthub</Link>
-            <a className="nav__catalog">Каталог</a>
             <div className="nav__links">
-                <a href="/about" className="link-btn">О проекте</a>
-                <a href="/create" className="link-btn">Конструктор</a>
-                <a className="link-btn">Ученикам</a>
+                <Link to="/about" className="link-btn">О проекте</Link>
+                <Link to="/create" className="link-btn">Конструктор</Link>
             </div>
             <Profile/>
             <NavMenu/>
