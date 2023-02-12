@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../store/User/selectors";
+import {selectUser, selectUserAuthenticated} from "../../store/User/selectors";
 import { TabSwitch, TabLabel, cnTab } from "../../components/TabSwitch/TabSwitch";
 import "./ProfileSettings.css";
 import {useEffect, useState} from "react";
@@ -34,6 +34,7 @@ function SecuritySession(props) {
 export function ProfileSettings() {
     const { userId } = useParams();
     const currentUser = useSelector(selectUser);
+    const auth = useSelector(selectUserAuthenticated);
     const [activeTab, setActiveTab] = useState("Основные");
     const navigate = useNavigate();
 
@@ -65,6 +66,10 @@ export function ProfileSettings() {
     const sessionLogout = (ip) => {
         api_get("logout_ip/" + ip);
         window.location.reload();
+    }
+
+    if (!auth) {
+        return null;
     }
 
     return (

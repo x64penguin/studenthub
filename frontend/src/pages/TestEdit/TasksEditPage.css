@@ -49,6 +49,10 @@
     cursor: pointer;
 }
 
+.element-editor-list span:first-child {
+    margin-top: 0;
+}
+
 .element-selector .question-element-selector:nth-child(1) {
     margin-top: 0;
 }

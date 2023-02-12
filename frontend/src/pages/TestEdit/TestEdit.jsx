@@ -26,11 +26,11 @@ export function TestEdit() {
     });
 
     useEffect(() => {
-        document.title = "StudentHub - редактирование теста";
         api_get("test/" + testId + "?include_tasks=true", (data) => {
             if (currentUser.id !== data.author) {
                 navigate("/test/" + testId);
             }
+            document.title = data.name + " [edit]";
             setTest(data);
             setForm({
                 name: data.name,
@@ -62,7 +62,7 @@ export function TestEdit() {
             formData.append("image", form.image);
         }
 
-        api_post("edit_test/main", formData, () => {
+        api_post("edit_test/" + testId, formData, () => {
             navigate("/test/" + testId);
         });
     }
@@ -70,7 +70,7 @@ export function TestEdit() {
     return <div className="test-edit__page">
         <div className="block-default test-edit__title">
             <img src={staticFile("test_icon/" + testId)} alt="test-icon"/>
-            <Input className="test-name" value={test.name}/>
+            <Input className="test-name" value={test.name} onChange={e => setForm({...form, name: e.target.value})}/>
         </div>
         <div className="test-dashboard">
             <TabSwitch onChange={setCurrentTab}>
@@ -80,7 +80,7 @@ export function TestEdit() {
             </TabSwitch>
             <div className="block-default dashboard-content">
                 <div className={cnTab(currentTab === "Основные")}>
-                    <Input label="Описание" value={form.description}/>
+                    <Input label="Описание" value={form.description} onChange={e => setForm({...form, description: e.target.value})}/>
                     <FileInput label="Картинка" onChange={changeImage}/>
                     <Button className="submit" onClick={saveChanges}>Сохранить</Button>
                 </div>
@@ -111,8 +111,8 @@ function SolutionInfo({name, solutions}) {
                 {
                     firstSolution.state === "complete" ?
                         <>
-                            <span>Первая поптыка: {Math.round(firstSolution.result[0]/firstSolution.result[1]*100)}% Время: {firstSolution.delta}</span>
-                            <ProgressBar style={{marginLeft: "16px", width: "10rem"}} percentage={Math.round(firstSolution.result[0]/firstSolution.result[1]*100)}/>
+                            <span style={{fontSize: "1.2rem"}}>Первая поптыка: <strong>{Math.round(firstSolution.result[0]/firstSolution.result[1]*100)}%</strong> Время: {firstSolution.delta}</span>
+                            <ProgressBar style={{width: "10rem", marginLeft: "1rem", background: "white"}} percentage={Math.round(firstSolution.result[0]/firstSolution.result[1]*100)}/>
                         </> :
                         <>
                             <span>Решает</span>
@@ -135,7 +135,7 @@ function SolutionInfo({name, solutions}) {
             }}>
                 { solution.state === "complete" ?
                     <>
-                        <span>Попытка №{idx + 1}: {Math.round(solution.result[0]/solution.result[1]*100)}% Время: {solution.delta}</span>
+                        <span style={{fontSize: "1.2rem"}}>Попытка №{idx + 1}: <strong>{Math.round(solution.result[0]/solution.result[1]*100)}%</strong> Время: {solution.delta}</span>
                         <ProgressBar style={{width: "10rem", background: "white"}}  percentage={Math.round(solution.result[0]/solution.result[1]*100)}/>
                     </>
                     :

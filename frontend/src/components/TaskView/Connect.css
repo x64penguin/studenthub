@@ -13,6 +13,7 @@
     border-radius: 6px;
     background-color: white;
     cursor: grab;
+    touch-action: none;
 }
 
 .connect-to-variant {
@@ -20,10 +21,15 @@
     grid-template-columns: 1fr 1fr;
     margin-bottom: 0.75rem;
     border-radius: 6px;
+    min-height: 4rem;
     width: 100%;
-    background-color: #3c52b4;
+    background-color: #3b8cf6;
     padding: 0.5rem;
     transition: box-shadow 0.3s;
+}
+
+.connect-to-variant:last-child {
+    margin-bottom: 0;
 }
 
 .connect-to-label {

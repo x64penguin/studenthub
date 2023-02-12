@@ -5,7 +5,7 @@ import {Button} from "../../components/Button/Button";
 import {TaskView} from "../../components/TaskView/TaskView";
 import {Popup} from "../../components/Popup/Popup";
 import {createBaseQuestion, formatTask, generateTask, replaceQuestion} from "../../components/TaskView/taskUtils";
-import {api_post, replaceObject} from "../../utils";
+import {api_post, jsonify, replaceObject} from "../../utils";
 import {Input} from "../../components/Input/Input";
 import {Checkbox} from "../../components/Checkbox/Checkbox";
 import delete_icon from "./delete-icon.svg";
@@ -126,7 +126,7 @@ export function TasksEditPage({test}) {
                     }
                 }}>Удалить</Button>
                 <Button onClick={() =>
-                    api_post("upload_tasks/" + test.id, tasks.map(generateTask))}>
+                    api_post("upload_tasks/" + test.id, jsonify(tasks.map(generateTask)))}>
                     Сохранить
                 </Button>
             </div>
@@ -291,6 +291,11 @@ function ElementEditor({ element, onSave, validator }) {
                 className="element-editor__select-preview"
                 element={editedElement}
                 onChange={(newRight) => {
+                    Object.keys(newRight).forEach(key => {
+                        if (newRight[key] === false) {
+                            delete newRight[key];
+                        }
+                    });
                     setEditedElement({...editedElement, right: newRight});
                 }}
             />);

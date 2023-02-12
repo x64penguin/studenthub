@@ -13,7 +13,7 @@ export function Option(props) {
 
 export function Select(props) {
     const {
-        children,
+        className = "",
         onChange,
         label,
     } = props;
@@ -22,7 +22,7 @@ export function Select(props) {
     const [active, setActive] = useState(options[0].props.children);
     const [opened, setOpened] = useState(false);
 
-    return <div className="default-select__wrapper">
+    return <div className={classNames("default-select__wrapper", className)}>
         <span className="select-label">{label}</span>
         <div className={classNames({"default-select": true, "default-select_opened": opened})} onClick={() => setOpened(!opened)}>
             <span>{active}</span>

@@ -34,18 +34,18 @@
     box-shadow: 0 0 16px rgba(130, 120, 250, 0.2);
 }
 
-.solution-result__wrapper {
-
-}
-
-@media (max-width: 768px) {
-    .solution-page {
-        width: 90%;
-    }
+.answer-selector {
+    float: right;
 }
 
 @media (max-width: 1024px) {
     .solution-page {
         width: 75%;
+    }
+}
+
+@media (max-width: 768px) {
+    .solution-page {
+        width: 90%;
     }
 }

@@ -15,7 +15,7 @@ function logout(dispatch) {
     dispatch(userSlice.actions.logout());
 }
 
-function NavMenu(props) {
+function NavMenu() {
     const [opened, setOpened] = useState(false);
     const user = useSelector(selectUser);
     const auth = useSelector(selectUserAuthenticated);
@@ -38,11 +38,7 @@ function NavMenu(props) {
         <div className="menu-dropdown__wrapper">
             <button type="button" className="menu-button" onClick={() => setOpened(!opened)}><img alt="menu icon" src={menu_icon}/></button>
             <Dropdown onClick={closeMenu} opened={opened}>
-                <DropdownItem link="/catalog">Каталог</DropdownItem>
-                <DropdownItem link="/about">О проекте</DropdownItem>
-                <DropdownItem>Учителям</DropdownItem>
-                <DropdownItem>Ученикам</DropdownItem>
-                
+                <DropdownItem link="/create">Конструктор</DropdownItem>
                 { auth ? userAuthed : userUnauthed }
             </Dropdown>
         </div>
@@ -83,7 +79,6 @@ export function Navbar() {
         <nav>
             <Link to="/" className="nav__title">studenthub</Link>
             <div className="nav__links">
-                <Link to="/about" className="link-btn">О проекте</Link>
                 <Link to="/create" className="link-btn">Конструктор</Link>
             </div>
             <Profile/>

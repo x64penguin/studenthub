@@ -1,12 +1,12 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {api_get, api_post} from "../../utils";
+import {api_get, api_post, jsonify} from "../../utils";
 import {Loading} from "../../components/Loading/Loading";
 import "./Solution.css";
 import classNames from "classnames";
-import {TaskView} from "../../components/TaskView/TaskView";
+import {TaskView, TaskViewAnswers} from "../../components/TaskView/TaskView";
 import {Button} from "../../components/Button/Button";
-import {ProgressBar} from "../../components/ProgressBar/ProgressBar";
+import {Option, Select} from "../../components/Select/Select";
 
 export function Solution() {
     const navigate = useNavigate();
@@ -15,7 +15,10 @@ export function Solution() {
     const [answer, setAnswer] = useState({});
 
     useEffect(() => {
-        api_get("solution/" + solutionId, setSolution, () => {
+        api_get("solution/" + solutionId, (data) => {
+            setSolution(data);
+            document.title = data.test.name;
+        }, () => {
            navigate("/404");
         });
     }, []);
@@ -23,8 +26,6 @@ export function Solution() {
     if (solution === null) {
         return <Loading/>;
     }
-
-    console.log(solution);
 
     if (solution.state !== "complete") {
         return <div className="solution-page">
@@ -51,11 +52,11 @@ export function Solution() {
                 <Button style="secondary" onClick={() => {
                     api_post(
                         "submit_solution/" + solutionId,
-                        {
+                        jsonify({
                             "id": solution.current_task,
                             "answer": null,
                             "skip": true
-                        },
+                        }),
                         (data) => {
                             setSolution(data);
                             setAnswer({});
@@ -65,11 +66,11 @@ export function Solution() {
                 <Button onClick={() => {
                     api_post(
                         "submit_solution/" + solutionId,
-                        {
+                        jsonify({
                             "id": solution.current_task,
                             "answer": answer,
                             "skip": false
-                        },
+                        }),
                         (data) => {
                             setSolution(data);
                             setAnswer({});
@@ -87,11 +88,52 @@ export function Solution() {
 }
 
 function SolutionResults({solution}) {
-    const [taskId, setTaskId] = useState(0);
+    const [task, setTask] = useState(solution.test.tasks[0]);
+    const [answerSwitch, setAnswerSwitch] = useState(0);
 
-    return <div className="solution-result__wrapper">
-        <div className="solution-result__bar">
+    function RenderBar() {
+        let result = [];
+        for (let i = 0; i < solution.test.tasks.length; i++) {
+            result.push(<span
+                className="task-bar__item answered"
+                key={i}
+                onClick={() => setTask(solution.test.tasks[i])}
+                style={{
+                    cursor: "pointer"
+                }}
+            >
+                {i + 1}
+            </span>);
+        }
 
+        return result;
+    }
+
+    const taskId = solution.test.tasks.indexOf(task);
+
+    return <div className="solution-page">
+        <div className="solution__task-bar">
+            <RenderBar/>
         </div>
+        <div
+            className="block-default"
+            style={{
+                marginTop: "var(--default-margin)"
+            }}
+        >
+            <TaskViewAnswers
+                showRight={answerSwitch === 0}
+                task={task}
+                answers={solution.answered[taskId]}
+                errors={solution.errors[taskId]}
+            />
+        </div>
+        <Select
+            className="answer-selector"
+            onChange={setAnswerSwitch}
+        >
+            <Option>Правильные ответы</Option>
+            <Option>Ваши ответы</Option>
+        </Select>
     </div>;
 }

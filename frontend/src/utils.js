@@ -22,11 +22,11 @@ export function get(url, successCallback, errorCallback) {
 export function post(url, body, successCallback, errorCallback) {
     fetch(API_SERVER + url, 
         {
-            method: "POST", 
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(body),
+            body: body,
         }).then((data) => data.json()).then(successCallback, (error) => {
         if (errorCallback === undefined) {
             console.error(`POST request error: ${error}`);
@@ -49,7 +49,7 @@ export function api_get(api, successCallback=undefined, errorCallback = undefine
 /**
  * 
  * @param {string} api 
- * @param {json | FormData} body
+ * @param {string | FormData} body
  * @param {Function | undefined} successCallback 
  * @param {Function | undefined} errorCallback 
  */
@@ -62,11 +62,8 @@ export function api_post(api,
 
 export async function async_api_post(api, body, errorCallback) {
     return await fetch(API_SERVER + "/api/" + api, {
-        method: "POST", 
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
+        method: "POST",
+        body: body
     }).catch(errorCallback);
 }
 
@@ -86,3 +83,5 @@ export function replaceObject(arr, setArr, index, obj) {
         return el;
     }))
 }
+
+export const jsonify = JSON.stringify;

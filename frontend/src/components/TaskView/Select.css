@@ -9,8 +9,20 @@
     cursor: pointer;
 }
 
+.select-task__variant:last-child {
+    margin-bottom: 0;
+}
+
 .select-task__variant.selected {
     background-color: #6fbeff;
+}
+
+.select-task__variant.error {
+    background: rgb(255, 131, 131);
+}
+
+.select-task__variant.success {
+    background: rgb(162, 255, 123);
 }
 
 .select-task .select-task__variant:last-child {

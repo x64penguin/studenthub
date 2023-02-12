@@ -73,13 +73,13 @@ function Result({test}) {
     let bestSolution = test.solutions[0];
     const lastSolution = test.solutions[test.solutions.length - 1];
     const lastSolutionPercentage = Math.round(lastSolution.result[0]/lastSolution.result[1]*100);
-    let bestSolutionPercentage = 0;
+    let bestSolutionPercentage = Math.round(bestSolution.result[0]/bestSolution.result[1]*100);
 
     for (let i = 0; i < test.solutions.length; i++) {
         const solution = test.solutions[i];
         if (solution.state === "complete" && solution.result[0] > bestSolution.result[0]) {
             bestSolution = solution;
-            bestSolutionPercentage = Math.round(bestSolution.result[0]/bestSolution.result[1]*100)
+            bestSolutionPercentage = Math.round(bestSolution.result[0]/bestSolution.result[1]*100);
         }
     }
 

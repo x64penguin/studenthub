@@ -5,7 +5,7 @@ import uuid
 from app import app, db
 import os
 import utils
-from flask import request, send_file, Response
+from flask import request, send_file, Response, make_response
 from models import get_user, User, UserSession, Test, TestSolution, TESTS_PATH
 from authorization import get_current_user, login_required, login_user, logout_user
 
@@ -41,9 +41,15 @@ def api_login():
     if user is None or not user.check_password(data["password"]):
         return {"response": "Неверное имя пользователся или пароль"}, 200
     else:
-        login_user(user)
+        token, expires = login_user(user)
+        resp = make_response({
+            "response": "success",
+            "token": token,
+            "user": user.json_safe(),
+        }, 200)
+        resp.set_cookie("token", token, expires=expires, domain="192.168.0.132:3000", samesite="None", httponly=True, secure=True)
 
-        return {"response": "success", "user": user.json_safe()}, 200
+        return resp
 
 
 @app.route("/api/register", methods=["POST"])
@@ -195,8 +201,10 @@ def edit_test(user, test_id):
     if user.id != test.author_id:
         return {"response", "unauthorized"}, 401
 
-    test.name = request.form["name"]
-    test.description = request.form["description"]
+    test.name = request.form.get("name")
+    test.description = request.form.get("description")
+
+    db.session.commit()
 
     if len(request.files) != 0:
         ...  # TODO: upload image
@@ -278,7 +286,9 @@ def get_solution(user, solution_id):
         test_db = Test.query.filter_by(id=solution.test_id).first()
         return {
             "state": solution_json["state"],
+            "answered": solution_json["answered"],
             "result": list(solution_json["result"]),
+            "errors": solution_json["errors"],
             "test": test_db.safe_json(),
         }, 200
 
@@ -295,7 +305,8 @@ def get_solution(user, solution_id):
         "skipped": solution_json["skipped"],
         "total_tasks": len(tasks),
         "current_task": next_task,
-        "task": task
+        "task": task,
+        "test": solution.test.json(),
     }, 200
 
 
@@ -349,7 +360,9 @@ def submit_solution(user, solution_id):
     elif solution_json["state"] == "running skipped":
         next_task = min(solution_json["skipped"])
     elif solution_json["state"] == "complete":
-        solution_json["result"] = list(utils.generate_results(test, solution_json["answered"]))
+        points, max_points, errors = utils.generate_results(test, solution_json["answered"])
+        solution_json["result"] = [points, max_points]
+        solution_json["errors"] = errors
 
         with open(os.path.join(TESTS_PATH, "solutions", str(solution_id) + ".json"), "w") as f:
             f.write(json.dumps(solution_json))
@@ -357,8 +370,10 @@ def submit_solution(user, solution_id):
         test_db = Test.query.filter_by(id=solution.test_id).first()
         return {
             "state": solution_json["state"],
+            "answered": solution_json["answered"],
             "result": list(solution_json["result"]),
-            "test": test_db.name,
+            "errors": solution_json["errors"],
+            "test": test_db.safe_json(),
         }, 200
 
     task = test[next_task]
@@ -375,12 +390,14 @@ def submit_solution(user, solution_id):
         "skipped": solution_json["skipped"],
         "total_tasks": len(test),
         "current_task": next_task,
-        "task": task
+        "task": task,
+        "test": solution.test.json(),
     }, 200
 
 
 @app.after_request
 def add_header(response: Response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Headers'] = '*'
+    response.headers['Access-Control-Allow-Origin'] = app.config["FRONTEND_SERVER"]
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Origin, X-Requested-With'
+    response.headers['Access-Control-Allow-Credentials'] = "true"
     return response

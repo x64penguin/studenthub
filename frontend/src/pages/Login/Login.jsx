@@ -2,13 +2,14 @@ import { useState } from "react"
 import { Button } from "../../components/Button/Button"
 import { Input } from "../../components/Input/Input"
 import { ServerError } from "../../components/ServerError/ServerError"
-import { api_post} from "../../utils"
+import { jsonify } from "../../utils"
 import { useDispatch } from "react-redux";
 import "./Login.css"
 import { userSlice } from "../../store/User"
-import { useNavigate, useParams, useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
+import {API_SERVER} from "../../config";
 
-export function Login(props) { 
+export function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [serverError, setServerError] = useState('');
@@ -25,9 +26,18 @@ export function Login(props) {
             "password": password,
         }
 
-        api_post("login", request, (data) => {
+        fetch(API_SERVER + "/api/login", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+
+            },
+            body: jsonify(request)
+        }).then((data) => data.json()).then((data) => {
             if (data.response === "success") {
                 dispatch(userSlice.actions.login(data));
+
 
                 return navigate(searchParams.get("redirect") || "/");
             } else {

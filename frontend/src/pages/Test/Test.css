@@ -74,6 +74,16 @@
     cursor: pointer;
 }
 
+@media (max-width: 1024px) {
+    .test__page {
+        width: 75%;
+    }
+
+    .result__wrapper {
+        width: 75%;
+    }
+}
+
 @media (max-width: 768px) {
     .test__page {
         width: 90%;
@@ -85,15 +95,5 @@
 
     .result__wrapper .selected_results {
         grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 1024px) {
-    .test__page {
-        width: 75%;
-    }
-
-    .result__wrapper {
-        width: 75%;
     }
 }

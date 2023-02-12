@@ -22,6 +22,7 @@ export function ProfilePage() {
         api_get("user/" + userId, (data) => {
             if (data.response === "success") {
                 setUser(data.user);
+                document.title = data.user.username;
             }
         });
     }, [setUser, userId]);

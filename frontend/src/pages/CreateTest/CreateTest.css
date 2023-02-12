@@ -8,3 +8,15 @@
     margin-top: var(--default-margin);
     margin-left: auto;
 }
+
+@media (max-width: 1024px) {
+    .create-test {
+        width: 75%;
+    }
+}
+
+@media (max-width: 767px) {
+    .create-test {
+        width: 90%;
+    }
+}
