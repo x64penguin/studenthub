@@ -163,9 +163,9 @@ def test_icon(tid):
         return {"response": 404}, 404
 
     try:
-        return send_file(os.path.join(TESTS_PATH, ".default.svg"))
+        return send_file(os.path.join(TESTS_PATH, test.id + test.avatar))
     except FileNotFoundError:
-        return send_file(os.path.join(TESTS_PATH, test.uuid + test.avatar))
+        return send_file(os.path.join(TESTS_PATH, ".default.svg"))
 
 
 @app.route("/api/test/<int:test_id>")
@@ -205,7 +205,9 @@ def edit_test(user, test_id):
     db.session.commit()
 
     if len(request.files) != 0:
-        ...  # TODO: upload image
+        image = request.files.get("image")
+        cropped = utils.crop_and_resize(image)
+        cropped.save(os.path.join(TESTS_PATH, str(test.id) + ".png"))
 
     return {"response": "success"}, 200
 

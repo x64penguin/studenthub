@@ -16,10 +16,11 @@ import {ConnectTask} from "../../components/TaskView/Connect";
 export function TasksEditPage({test}) {
     const [activeTask, _setActiveTask] = useState(0);
     const [tasks, setTasks] = useState(test.tasks.map(formatTask));
-    // TODO: почистить этот мусор
-    const [elementSelectorOpened, setElementSelectorOpened] = useState(false);
-    const [elementListOpened, setElementListOpened] = useState(false);
-    const [elementEditorOpened, setElementEditorOpened] = useState(false);
+    const [openState, setOpenState] = useState({
+        selector: false,
+        list: false,
+        editor: false
+    });
     const [editingElement, setEditingElement] = useState(undefined);
 
     const [textAreaValue, setTextAreaValue] = useState(tasks[0].text);
@@ -31,7 +32,7 @@ export function TasksEditPage({test}) {
     }
 
     const insertNewElement = (el) => {
-        let textArea = textAreaRef.current;
+        const textArea = textAreaRef.current;
         let newTextAreaValue = insertIntoText(
             textArea.value,
             textArea.selectionStart,
@@ -43,8 +44,7 @@ export function TasksEditPage({test}) {
             elements: [...tasks[activeTask].elements, el], text: newTextAreaValue
         });
         setEditingElement(el);
-        setElementSelectorOpened(false);
-        setElementEditorOpened(true);
+        setOpenState({...openState, selector: false, editor: true});
     }
 
     const QuestionElement = ({label}) => {
@@ -66,7 +66,8 @@ export function TasksEditPage({test}) {
                             "active": idx === activeTask
                         })}
                         onClick={() => setActiveTask(idx)}
-                        key={idx}>
+                        key={idx}
+                    >
                         {idx + 1}
                     </button>
                 })
@@ -105,8 +106,8 @@ export function TasksEditPage({test}) {
                 <TaskView task={tasks[activeTask] && generateTask(tasks[activeTask])} onChange={() => {}}/>
             </div>
             <div className="buttons-row">
-                <Button style="secondary" onClick={() => setElementSelectorOpened(true)}>Добавить вопрос</Button>
-                <Button style="secondary" onClick={() => setElementListOpened(true)}>Редактировать вопрос</Button>
+                <Button style="secondary" onClick={() => setOpenState({...openState, selector: true})}>Добавить вопрос</Button>
+                <Button style="secondary" onClick={() => setOpenState({...openState, list: true})}>Редактировать вопрос</Button>
                 <Button style="secondary" onClick={() => {
                     if (tasks.length > 0) {
                         let newTasks = [];
@@ -131,8 +132,8 @@ export function TasksEditPage({test}) {
                 </Button>
             </div>
             <Popup
-                opened={elementSelectorOpened}
-                onClose={() => setElementSelectorOpened(false)}
+                opened={openState.selector}
+                onClose={() => setOpenState({...openState, selector: false})}
                 label="Добавить вопрос"
                 className="element-selector"
             >
@@ -142,8 +143,8 @@ export function TasksEditPage({test}) {
                 <QuestionElement label="Связка"/>
             </Popup>
             <Popup
-                opened={elementListOpened}
-                onClose={() => setElementListOpened(false)}
+                opened={openState.list}
+                onClose={() => setOpenState({...openState, list: false})}
                 label="Вопросы"
                 className="element-editor-list"
             >
@@ -155,8 +156,7 @@ export function TasksEditPage({test}) {
 
                         return tasks[activeTask].elements.map((el, idx) => {
                             return <span key={idx} onClick={() => {
-                                setElementEditorOpened(true);
-                                setElementListOpened(false);
+                                setOpenState({...openState, editor: true, list: false});
                                 setEditingElement(el);
                             }}>{el.name}</span>
                         })
@@ -164,12 +164,12 @@ export function TasksEditPage({test}) {
                 }
             </Popup>
             <Popup
-                opened={elementEditorOpened}
-                onClose={() => setElementEditorOpened(false)}
+                opened={openState.editor}
+                onClose={() => setOpenState({...openState, editor: false})}
                 label="Редактировать вопрос"
                 className="element-editor"
             >
-                { elementEditorOpened &&
+                { openState.editor &&
                 <ElementEditor
                     element={editingElement}
                     validator={e => {
@@ -186,7 +186,7 @@ export function TasksEditPage({test}) {
                         return result;
                     }}
                     onSave={(newElement) => {
-                        setElementEditorOpened(false);
+                        setOpenState({...openState, editor: false});
                         let newTextAreaValue = textAreaValue.replace(`$[${editingElement.name}]`, `$$[${newElement.name}]`);
                         setTextAreaValue(newTextAreaValue);
                         replaceObject(tasks, setTasks, activeTask, {
