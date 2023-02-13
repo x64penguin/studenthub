@@ -163,7 +163,7 @@ def test_icon(tid):
         return {"response": 404}, 404
 
     try:
-        return send_file(os.path.join(TESTS_PATH, test.id + test.avatar))
+        return send_file(os.path.join(TESTS_PATH, str(test.id) + ".png"))
     except FileNotFoundError:
         return send_file(os.path.join(TESTS_PATH, ".default.svg"))
 

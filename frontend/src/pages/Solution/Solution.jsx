@@ -7,6 +7,7 @@ import classNames from "classnames";
 import {TaskView, TaskViewAnswers} from "../../components/TaskView/TaskView";
 import {Button} from "../../components/Button/Button";
 import {Option, Select} from "../../components/Select/Select";
+import {LinkButton} from "../../components/Button/LinkButton";
 
 export function Solution() {
     const navigate = useNavigate();
@@ -128,12 +129,14 @@ function SolutionResults({solution}) {
                 errors={solution.errors[taskId]}
             />
         </div>
-        <Select
-            className="answer-selector"
-            onChange={setAnswerSwitch}
-        >
-            <Option>Правильные ответы</Option>
-            <Option>Ваши ответы</Option>
-        </Select>
+        <div style={{display: "flex", justifyContent: "space-between"}}>
+            <LinkButton css={{marginTop: "auto"}} link={"/test/" + solution.test.id}>Вернуться к тесту</LinkButton>
+            <Select
+                onChange={setAnswerSwitch}
+            >
+                <Option>Правильные ответы</Option>
+                <Option>Ваши ответы</Option>
+            </Select>
+        </div>
     </div>;
 }

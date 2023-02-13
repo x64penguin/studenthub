@@ -10,11 +10,10 @@ import uuid
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        cookies = request.cookies
-        try:
-            token = cookies["token"]
-        except KeyError:
-            return {"response": "not logged in"}, 401
+        token = request.headers.get("Authorization")
+        if not token:
+            return
+        token = token.split()[1]
 
         try:
             data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])

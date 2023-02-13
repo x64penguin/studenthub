@@ -1,0 +1,23 @@
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: lightgray;
+    color: #333;
+    margin-top: auto;
+}
+
+.footer__copyright {
+    margin: 0;
+}
+
+.footer__social-media {
+    display: flex;
+}
+
+.footer__social-media a {
+    margin-left: 0.5rem;
+    color: #333;
+    text-decoration: none;
+}

@@ -5,6 +5,7 @@ import { api_get } from "../../utils";
 import { Loading } from "../Loading/Loading"
 import { Navbar } from "../Navbar/Navbar"
 import "./Layout.css"
+import Footer from "../Footer/Footer";
 
 export function Layout(props) {
     const dispatch = useDispatch();
@@ -24,6 +25,7 @@ export function Layout(props) {
                     <main>
                         { props.children }
                     </main>
+                    <Footer/>
                 </> : 
                 <Loading/> }
         </div>
