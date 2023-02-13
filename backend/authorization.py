@@ -39,12 +39,10 @@ def login_required(f):
 
 
 def get_current_user() -> User | None:
-    cookies = request.cookies
-    try:
-        token = cookies["token"]
-    except KeyError:
+    token = request.headers.get("Authorization")
+    if not token:
         return
-
+    token = token.split()[1]
     data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
     user = User.query.filter_by(id=data["userid"]).first()
 
@@ -54,7 +52,7 @@ def get_current_user() -> User | None:
     if data["exp"] < datetime.utcnow().timestamp():
         return
 
-    session = UserSession.query.filter_by(user_id=user.id).first()
+    session = UserSession.query.filter_by(ip=request.remote_addr).first()
 
     if session is None or session.ip != request.remote_addr:  # anti token leak
         return

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Button } from "../../components/Button/Button"
 import { Input } from "../../components/Input/Input"
 import { ServerError } from "../../components/ServerError/ServerError"
-import { jsonify } from "../../utils"
+import {api_post, jsonify, setCookie} from "../../utils"
 import { useDispatch } from "react-redux";
 import "./Login.css"
 import { userSlice } from "../../store/User"
@@ -26,24 +26,15 @@ export function Login() {
             "password": password,
         }
 
-        fetch(API_SERVER + "/api/login", {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-
-            },
-            body: jsonify(request)
-        }).then((data) => data.json()).then((data) => {
+        api_post("login", jsonify(request), (data) => {
             if (data.response === "success") {
                 dispatch(userSlice.actions.login(data));
-
-
+                setCookie("token", data.token, {expires: data.expires})
                 return navigate(searchParams.get("redirect") || "/");
             } else {
                 setServerError(data.response);
             }
-        })
+        });
     }
 
     return <div className="block-default login__wrapper">

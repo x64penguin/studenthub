@@ -9,7 +9,12 @@ export function get(url, successCallback, errorCallback) {
         }
     }
 
-    fetch(API_SERVER + url)
+    fetch(API_SERVER + url, {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + getCookie("token")
+        }
+    })
         .then((res) => {
             if (res.ok) {
                 return res.json();
@@ -25,6 +30,7 @@ export function post(url, body, successCallback, errorCallback) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": "Bearer " + getCookie("token"),
             },
             body: body,
         }).then((data) => data.json()).then(successCallback, (error) => {
@@ -83,5 +89,44 @@ export function replaceObject(arr, setArr, index, obj) {
         return el;
     }))
 }
+
+export function getCookie(name) {
+    const cookieName = name + "=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookieArray = decodedCookie.split(';');
+    for (let i = 0; i < cookieArray.length; i++) {
+        let cookie = cookieArray[i];
+        while (cookie.charAt(0) === ' ') {
+            cookie = cookie.substring(1);
+        }
+        if (cookie.indexOf(cookieName) === 0) {
+            return cookie.substring(cookieName.length, cookie.length);
+        }
+    }
+    return "";
+}
+
+export function setCookie(name, value, options = {}) {
+    let expires = options.expires;
+    if (typeof expires === "number" && expires) {
+        const d = new Date();
+        d.setTime(d.getTime() + expires * 1000);
+        expires = options.expires = d;
+    }
+    if (expires && expires.toUTCString) {
+        options.expires = expires.toUTCString();
+    }
+    value = encodeURIComponent(value);
+    let updatedCookie = name + "=" + value;
+    for (const propName in options) {
+        updatedCookie += "; " + propName;
+        const propValue = options[propName];
+        if (propValue !== true) {
+            updatedCookie += "=" + propValue;
+        }
+    }
+    document.cookie = updatedCookie;
+}
+
 
 export const jsonify = JSON.stringify;

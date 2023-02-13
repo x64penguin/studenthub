@@ -42,14 +42,12 @@ def api_login():
         return {"response": "Неверное имя пользователся или пароль"}, 200
     else:
         token, expires = login_user(user)
-        resp = make_response({
+        return {
             "response": "success",
             "token": token,
+            "expires": expires,
             "user": user.json_safe(),
-        }, 200)
-        resp.set_cookie("token", token, expires=expires, domain="192.168.0.132:3000", samesite="None", httponly=True, secure=True)
-
-        return resp
+        }, 200
 
 
 @app.route("/api/register", methods=["POST"])
@@ -397,7 +395,6 @@ def submit_solution(user, solution_id):
 
 @app.after_request
 def add_header(response: Response):
-    response.headers['Access-Control-Allow-Origin'] = app.config["FRONTEND_SERVER"]
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Origin, X-Requested-With'
-    response.headers['Access-Control-Allow-Credentials'] = "true"
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = '*'
     return response
