@@ -6,7 +6,7 @@ from werkzeug.datastructures import FileStorage
 from models import TESTS_PATH, Test
 
 
-def crop_and_resize(image: FileStorage | Image.Image, size=(256, 256)) -> Image.Image:
+def crop_and_resize(image, size=(256, 256)) -> Image.Image:
     if type(image) is FileStorage:
         image = Image.open(image)
     crop_start, crop_end = [0, 0], [image.width, image.height]

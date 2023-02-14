@@ -59,7 +59,7 @@ class User(db.Model):
         return result
 
 
-def get_user(identifier: int | str) -> User:
+def get_user(identifier) -> User:
     """Get user by id or username"""
     if type(identifier) == int:
         return User.query.filter_by(id=identifier).first()
