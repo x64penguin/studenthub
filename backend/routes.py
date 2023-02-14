@@ -1,24 +1,23 @@
 import datetime
 import json
 import uuid
-
-from app import app, db
 import os
 import utils
-from flask import request, send_file, Response, make_response
+from app import app, db
+from flask import request, send_file
 from models import get_user, User, UserSession, Test, TestSolution, TESTS_PATH
 from authorization import get_current_user, login_required, login_user, logout_user
 
 
 @app.route("/api/validate_username", methods=["POST"])
-def api_api_validate_username():
+def validate_username():
     data = request.json
 
     return {"response": len(data['username']) != 0 and get_user(data["username"]) is None}, 200
 
 
 @app.route("/api/load_user")
-def api_load_user():
+def load_user():
     user = get_current_user()
 
     if user is None:
@@ -26,11 +25,11 @@ def api_load_user():
             "user": {},
             "auth": False
         }, 200
-    else:
-        return {
-            "user": user.json_safe(),
-            "auth": True
-        }, 200
+
+    return {
+        "user": user.json_safe(),
+        "auth": True
+    }, 200
 
 
 @app.route("/api/login", methods=["POST"])
@@ -39,7 +38,7 @@ def api_login():
     user = get_user(data["username"])
 
     if user is None or not user.check_password(data["password"]):
-        return {"response": "Неверное имя пользователся или пароль"}, 200
+        return {"response": "Неверное имя пользователя или пароль"}, 200
     else:
         token, expires = login_user(user)
         return {
@@ -55,7 +54,7 @@ def api_register():
     data = request.json
 
     if get_user(data["username"]) is not None:
-        return {"error": "Имя пользователся уже занято"}, 200
+        return {"error": "Имя пользователя уже занято"}, 200
     
     user = User(username=data["username"], email=data["email"], account_type=data["account-type"], name=data["name"])
     user.set_password(data["password"])
@@ -69,7 +68,6 @@ def api_register():
 @login_required
 def api_logout(user):
     logout_user(user)
-
     return {"response": "success"}, 200
 
 
@@ -80,13 +78,10 @@ def api_find_user(uid):
 
     if user is None:
         return {"response": "404"}, 404
-    
-    if user == current_user:
-        return {"response": "success", "user": user.json_safe()}
 
     return {
         "response": "success", 
-        "user": user.json()
+        "user": user.json_safe() if user == current_user else user.json()
     }
 
 
@@ -143,15 +138,17 @@ def api_logout_ip(_, ip):
 @login_required
 def api_create_test(user):
     data = request.form
-    try:
-        image = request.files["avatar"]
-    except KeyError:
-        image = None
-    test = Test(name=data["name"], description=data["description"], author_id=user.id, uuid=uuid.uuid4().hex)
+    test = Test(name=data["name"], description=data["description"], author_id=user.id)
+    image = request.files.get("avatar")
+    if image:
+        img = utils.crop_and_resize(image)
+        img.save(os.path.join(TESTS_PATH, str(test.id) + ".png"))
+    db.session.add(test)
+    db.session.commit()
 
     return {
         "response": "success",
-        "test": test.test.id
+        "test": test.id
     }
 
 
@@ -174,9 +171,7 @@ def get_test(test_id):
     current_user = get_current_user()
 
     if test is None:
-        return {
-            "response": 404
-        }, 404
+        return {"response": 404}, 404
 
     if current_user is not None:
         if current_user.id == test.author_id and request.args.get("include_tasks") == "true":
@@ -222,9 +217,8 @@ def upload_tasks(user, test_id):
     if user.id != test.author_id:
         return {"response", "unauthorized"}, 401
 
-    file = open(os.path.join(TESTS_PATH, str(test.id) + ".json"), "w", encoding="utf8")
-    file.write(json.dumps(request.json))
-    file.close()
+    with open(os.path.join(TESTS_PATH, str(test.id) + ".json"), "w", encoding="utf8") as file:
+        file.write(str(request.data))
 
     return {"response": "success"}, 200
 
@@ -267,47 +261,9 @@ def get_solution(user, solution_id):
     solution = TestSolution.query.filter_by(id=solution_id).first()
 
     if solution.user_id != user.id:
-        return {
-            "response": "unauthorized",
-        }, 401
+        return {"response": "unauthorized"}, 401
 
-    with open(os.path.join(TESTS_PATH, "solutions", str(solution.id) + ".json"), "r") as f:
-        solution_json = json.loads(f.read())
-
-    next_task = 0
-    if solution_json["state"] == "running":
-        if solution_json["answered"]:
-            next_task = max(map(int, solution_json["answered"].keys())) + 1
-        if solution_json["skipped"]:
-            next_task = max(next_task, max(solution_json["skipped"]) + 1)
-    elif solution_json["state"] == "running skipped":
-        next_task = min(solution_json["skipped"])
-    elif solution_json["state"] == "complete":
-        test_db = Test.query.filter_by(id=solution.test_id).first()
-        return {
-            "state": solution_json["state"],
-            "answered": solution_json["answered"],
-            "result": list(solution_json["result"]),
-            "errors": solution_json["errors"],
-            "test": test_db.safe_json(),
-        }, 200
-
-    with open(os.path.join(TESTS_PATH, str(solution.test_id) + ".json")) as f:
-        tasks = json.loads(f.read())
-        task = tasks[next_task]
-        for el in task:
-            if type(el) == dict:
-                el["right"] = None
-
-    return {
-        "state": solution_json["state"],
-        "answered": list(map(int, solution_json["answered"].keys())),
-        "skipped": solution_json["skipped"],
-        "total_tasks": len(tasks),
-        "current_task": next_task,
-        "task": task,
-        "test": solution.test.json(),
-    }, 200
+    return utils.get_solution(solution), 200
 
 
 @app.route("/api/submit_solution/<int:solution_id>", methods=["POST"])
@@ -320,13 +276,11 @@ def submit_solution(user, solution_id):
             "response": "unauthorized",
         }, 401
 
+    if not solution.in_progress:
+        return {"response": "ended"}, 403
+
     with open(os.path.join(TESTS_PATH, "solutions", str(solution.id) + ".json"), "r") as f:
         solution_json = json.loads(f.read())
-
-    if solution_json["state"] == "complete":
-        return {
-            "response": "ended",
-        }, 403
 
     submitted_task = request.json
 
@@ -351,52 +305,11 @@ def submit_solution(user, solution_id):
             db.session.commit()
             solution_json["state"] = "complete"
 
-    next_task = 0
-    if solution_json["state"] == "running":
-        if solution_json["answered"]:
-            next_task = max(map(int, solution_json["answered"].keys())) + 1
-        if solution_json["skipped"]:
-            next_task = max(next_task, max(solution_json["skipped"]) + 1)
-    elif solution_json["state"] == "running skipped":
-        next_task = min(solution_json["skipped"])
-    elif solution_json["state"] == "complete":
-        points, max_points, errors = utils.generate_results(test, solution_json["answered"])
-        solution_json["result"] = [points, max_points]
-        solution_json["errors"] = errors
-
-        with open(os.path.join(TESTS_PATH, "solutions", str(solution_id) + ".json"), "w") as f:
-            f.write(json.dumps(solution_json))
-
-        test_db = Test.query.filter_by(id=solution.test_id).first()
-        return {
-            "state": solution_json["state"],
-            "answered": solution_json["answered"],
-            "result": list(solution_json["result"]),
-            "errors": solution_json["errors"],
-            "test": test_db.safe_json(),
-        }, 200
-
-    task = test[next_task]
-    for el in task:
-        if type(el) == dict:
-            el["right"] = None
-
-    with open(os.path.join(TESTS_PATH, "solutions", str(solution_id) + ".json"), "w") as f:
-        f.write(json.dumps(solution_json))
-
-    return {
-        "state": solution_json["state"],
-        "answered": list(map(int, solution_json["answered"].keys())),
-        "skipped": solution_json["skipped"],
-        "total_tasks": len(test),
-        "current_task": next_task,
-        "task": task,
-        "test": solution.test.json(),
-    }, 200
+    return utils.get_solution(solution, solution_json, True, test)
 
 
 @app.after_request
-def add_header(response: Response):
+def add_header(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Headers'] = '*'
     return response

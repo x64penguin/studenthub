@@ -27,9 +27,9 @@ def login_required(f):
         if data["exp"] < datetime.utcnow().timestamp():
             return {"response": "session expired"}, 401
 
-        session = UserSession.query.filter_by(user_id=user.id).first()
+        session = UserSession.query.filter_by(ip=request.remote_addr, user_id=user.id).first()
 
-        if session is None or session.ip != request.remote_addr:
+        if session is None:
             return {"response": "stop stealing accounts"}, 401
 
         return f(user, *args, **kwargs)
@@ -39,7 +39,7 @@ def login_required(f):
 
 def get_current_user() -> User | None:
     token = request.headers.get("Authorization")
-    if not token:
+    if not token or token == "Bearer":
         return
     token = token.split()[1]
     data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
@@ -51,9 +51,9 @@ def get_current_user() -> User | None:
     if data["exp"] < datetime.utcnow().timestamp():
         return
 
-    session = UserSession.query.filter_by(ip=request.remote_addr).first()
+    session = UserSession.query.filter_by(ip=request.remote_addr, user_id=user.id).first()
 
-    if session is None or session.ip != request.remote_addr:  # anti token leak
+    if session is None:  # anti token leak
         return
 
     return user

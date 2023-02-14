@@ -1,19 +1,13 @@
 import json
-
-from sqlalchemy import func, select
-from sqlalchemy.orm import column_property
-
 import os
 from app import db, app
-from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime, date
-from sqlalchemy.ext.associationproxy import association_proxy
+from datetime import date
 
 TESTS_PATH = os.path.join(app.config["UPLOAD_FOLDER"], "tests")
 
 
-class User(UserMixin, db.Model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True)
     name = db.Column(db.String(64))

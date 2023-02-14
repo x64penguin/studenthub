@@ -1,5 +1,9 @@
+import json
+import os
+
 from PIL import Image
 from werkzeug.datastructures import FileStorage
+from models import TESTS_PATH, Test
 
 
 def crop_and_resize(image: FileStorage | Image.Image, size=(256, 256)) -> Image.Image:
@@ -72,3 +76,56 @@ def generate_results(test: list, answers: dict) -> tuple[int, int, dict[dict[boo
                     points += element["points"]
                 errors[task_idx][el_name] = not right
     return points, max_points, errors
+
+
+def get_solution(solution, solution_json=None, update=False, test=None):
+    if solution_json is None:
+        with open(os.path.join(TESTS_PATH, "solutions", str(solution.id) + ".json"), "r") as f:
+            solution_json = json.loads(f.read())
+
+    next_task = 0
+    if solution_json["state"] == "running":
+        if solution_json["answered"]:
+            next_task = max(map(int, solution_json["answered"].keys())) + 1
+        if solution_json["skipped"]:
+            next_task = max(next_task, max(solution_json["skipped"]) + 1)
+    elif solution_json["state"] == "running skipped":
+        next_task = min(solution_json["skipped"])
+    elif solution_json["state"] == "complete":
+        if test is None:
+            with open(os.path.join(TESTS_PATH, str(solution.test_id) + ".json"), "r") as f:
+                test = json.load(f)
+
+        points, max_points, errors = generate_results(test, solution_json["answered"])
+        solution_json["result"] = [points, max_points]
+        solution_json["errors"] = errors
+
+        if update:
+            with open(os.path.join(TESTS_PATH, "solutions", str(solution.id) + ".json"), "w") as f:
+                f.write(json.dumps(solution_json))
+
+        test_db = Test.query.filter_by(id=solution.test_id).first()
+        return {
+            "state": solution_json["state"],
+            "answered": solution_json["answered"],
+            "result": list(solution_json["result"]),
+            "errors": solution_json["errors"],
+            "test": test_db.safe_json(),
+        }
+
+    with open(os.path.join(TESTS_PATH, str(solution.test_id) + ".json")) as f:
+        tasks = json.loads(f.read())
+        task = tasks[next_task]
+        for el in task:
+            if type(el) == dict:
+                el["right"] = None
+
+    return {
+        "state": solution_json["state"],
+        "answered": list(map(int, solution_json["answered"].keys())),
+        "skipped": solution_json["skipped"],
+        "total_tasks": len(tasks),
+        "current_task": next_task,
+        "task": task,
+        "test": solution.test.json(),
+    }
