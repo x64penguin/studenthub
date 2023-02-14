@@ -37,7 +37,7 @@ def login_required(f):
     return decorated
 
 
-def get_current_user() -> User | None:
+def get_current_user():
     token = request.headers.get("Authorization")
     if not token or token == "Bearer":
         return
@@ -59,7 +59,7 @@ def get_current_user() -> User | None:
     return user
 
 
-def login_user(user: User) -> tuple[str, datetime] | None:
+def login_user(user: User):
     if user == get_current_user():
         return
 
