@@ -303,7 +303,11 @@ def submit_solution(user, solution_id):
             solution.in_progress = False
             solution.end_time = datetime.datetime.now()
             db.session.commit()
+            points, max_points, errors = utils.generate_results(test, solution_json["answered"])
             solution_json["state"] = "complete"
+            solution_json["result"] = [points, max_points]
+            solution_json["errors"] = errors
+
 
     return utils.get_solution(solution, solution_json, True, test)
 

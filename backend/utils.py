@@ -82,6 +82,9 @@ def get_solution(solution, solution_json=None, update=False, test=None):
     if solution_json is None:
         with open(os.path.join(TESTS_PATH, "solutions", str(solution.id) + ".json"), "r") as f:
             solution_json = json.loads(f.read())
+    elif update:
+        with open(os.path.join(TESTS_PATH, "solutions", str(solution.id) + ".json"), "w") as f:
+            f.write(json.dumps(solution_json))
 
     next_task = 0
     if solution_json["state"] == "running":
@@ -95,14 +98,6 @@ def get_solution(solution, solution_json=None, update=False, test=None):
         if test is None:
             with open(os.path.join(TESTS_PATH, str(solution.test_id) + ".json"), "r") as f:
                 test = json.load(f)
-
-        points, max_points, errors = generate_results(test, solution_json["answered"])
-        solution_json["result"] = [points, max_points]
-        solution_json["errors"] = errors
-
-        if update:
-            with open(os.path.join(TESTS_PATH, "solutions", str(solution.id) + ".json"), "w") as f:
-                f.write(json.dumps(solution_json))
 
         test_db = Test.query.filter_by(id=solution.test_id).first()
         return {

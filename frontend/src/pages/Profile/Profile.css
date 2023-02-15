@@ -98,6 +98,12 @@
     margin-left: auto;
 }
 
+@media (max-width: 1280px) {
+    .profile-page {
+        width: 70%;
+    }
+}
+
 @media (max-width: 768px) {
     .profile-page {
         width: 80%;

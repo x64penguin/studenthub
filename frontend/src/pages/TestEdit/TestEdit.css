@@ -48,6 +48,11 @@
     border-radius: 12px;
     padding: 0.7rem;
     gap: 12px;
+    margin-bottom: VAR(--default-margin);
+}
+
+.solution-info:last-child {
+    margin: 0;
 }
 
 .solution-info.not-expanded {
@@ -59,6 +64,12 @@
 .solution-info > .result {
     display: flex;
     align-items: center;
+}
+
+@media (max-width: 1280px) {
+    .test-edit__page {
+        width: 80%;
+    }
 }
 
 @media (max-width: 768px) {
