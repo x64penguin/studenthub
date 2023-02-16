@@ -34,7 +34,7 @@ export function TaskView(props) {
         {
             task.map((element, idx) => {
                 if (typeof element === 'string') {
-                    return <span key={idx}>{element}</span>;
+                    return <span className="task-view__text" key={idx}>{element}</span>;
                 } else {
                     switch (element.qtype) {
                         case 'input':
@@ -85,7 +85,7 @@ export function TaskViewAnswers({task, answers, errors, className, showRight}) {
         {
             task.map((element, idx) => {
                 if (typeof element === 'string') {
-                    return <span key={idx}>{element}</span>;
+                    return <span className="task-view__text" key={idx}>{element}</span>;
                 } else {
                     switch (element.qtype) {
                         case 'input':

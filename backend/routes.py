@@ -308,7 +308,6 @@ def submit_solution(user, solution_id):
             solution_json["result"] = [points, max_points]
             solution_json["errors"] = errors
 
-
     return utils.get_solution(solution, solution_json, True, test)
 
 

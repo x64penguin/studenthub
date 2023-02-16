@@ -12,6 +12,15 @@
     margin-top: var(--default-margin);
 }
 
+.task-view__text {
+    display: block;
+    margin-top: var(--default-margin);
+}
+
+.task-view__text:first-child {
+    margin-top: 0;
+}
+
 .input-result-view {
     background: rgb(162, 255, 123);
     border-radius: var(--border-radius);
