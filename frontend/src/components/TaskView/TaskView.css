@@ -13,7 +13,6 @@
 }
 
 .task-view__text {
-    display: block;
     margin-top: var(--default-margin);
 }
 

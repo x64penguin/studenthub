@@ -1,1 +1,1 @@
-export const API_SERVER = "http://192.168.0.251:5000"; // paste your server address here
+export const API_SERVER = "http://localhost:5000"; // paste your server address here

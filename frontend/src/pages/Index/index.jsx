@@ -17,18 +17,17 @@ export function Index() {
         <div className="index-container">
             <h1 className="index__title">Редактор тестов для любых заданий</h1>
             <p className="index__description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam dictum, leo euismod convallis viverra,
-                ex quam pharetra lacus, a tincidunt lectus magna non nulla.
+                Быстрый и удобный редактор тестов, позволяющий добавлять несколько вопросов в одно задание
             </p>
             <div className="index__buttons-container">
                 <LinkButton link="/create" className="index__create-test-button">Создать тест</LinkButton>
                 <LinkButton link="/register" className="index__register-button" style="secondary">Регистрация</LinkButton>
             </div>
             <div className="index__cards-container">
-                <Card>Крутая фича 1</Card>
-                <Card>Обязательно выбирайте нас</Card>
-                <Card>Прямо обязательно</Card>
-                <Card>Я проверю</Card>
+                <Card>Ввод и вставка слова</Card>
+                <Card>Выбор и множественный выбор</Card>
+                <Card>Задание на правильную последовательность</Card>
+                <Card>Задание на соотношение</Card>
             </div>
         </div>
     );

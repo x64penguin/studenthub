@@ -126,6 +126,7 @@ export function TaskViewAnswers({task, answers, errors, className, showRight}) {
 function InputResultView({value, error, inline}) {
     return <span
         className={classNames({
+            "task-view__task": true,
             "input-result-view": true,
             "error": error,
             "inline": inline,
